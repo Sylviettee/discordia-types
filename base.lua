@@ -282,10 +282,8 @@ function Client:error(msg, ...) end
 ---
 ---@class class
 ---@field public classes table<string, any>
+---@overload fun(name: string, ...): any, table, table
 local class = {}
-
----@type class | fun(name: string, ...): any, table, table
-class = class
 
 --- Function that returns true only if the provided argument is a Discordia class module.
 ---
@@ -400,8 +398,6 @@ local enums = {}
 ---@return T enum The newly constructed enum
 function enums.enum(data) end
 
---@ext
-
 --- **Discordia** has some built-in Lua standard library extensions.
 --- These provide complementary or supplementary, commonly used functions that the Lua standard library does not provide.
 ---
@@ -429,6 +425,9 @@ function enums.enum(data) end
 ---@field public string ext_string
 ---@field public table ext_table
 ---@field public math ext_math
+local ext = {}
+
+--@ext
 
 --@package
 
@@ -482,20 +481,21 @@ function enums.enum(data) end
 --- This may be used an alternative to storing values on class instances or in global variables, both of which are not recommended.
 ---
 ---@class discordia
----@field public Client Client
----@field public Clock Clock
----@field public Color Color
----@field public Date Date
----@field public Deque Deque
----@field public Emitter Emitter
----@field public Logger Logger
----@field public Mutex Mutex
----@field public Permissions Permissions
----@field public Stopwatch Stopwatch
----@field public Time Time
----@field public class class
----@field public enums enums
----@field public extensions extensions | function
----@field public package package
----@field public storage table<any, any>
-local discordia = {}
+local discordia = {
+  Client = Client,
+  Clock = Clock,
+  Color = Color,
+  Date = Date,
+  Deque = Deque,
+  Emitter = Emitter,
+  Logger = Logger,
+  Mutex = Mutex,
+  Permissions = Permissions,
+  Stopwatch = Stopwatch,
+  Time = Time,
+  class = class,
+  enums = enums,
+  extensions = ext,
+  package = package,
+  storage = {}
+}

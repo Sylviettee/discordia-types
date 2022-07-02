@@ -302,6 +302,13 @@ for _, class in pairs(docs) do
          :gsub(' async', '')
    end
 
+   -- Init overload
+
+   writing = writing .. f('---@overload %s\n', descInlineFunc({
+      parameters = class.parameters,
+      returns = {class.name},
+   }))
+
    -- Create table
 
    writing = writing .. f('local %s = {}\n', class.name)
@@ -327,8 +334,6 @@ for _, class in pairs(docs) do
       returns = {class.name},
       tags = class.methodTags
    })
-
-   -- TODO; fix constructors - Sumneko Lua 3.2.0
 
    writing = writing .. f('%sfunction %s:%s(%s) end\n', func, class.name, '__init', inParen) .. '\n'
 end
