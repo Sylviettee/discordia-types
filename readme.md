@@ -22,6 +22,7 @@ discordia-types provides a type file for [Discordia](https://github.com/Sinister
       -- ...
    end)
    ```
+6. Optional: If you're using `discordia.extensions`, copy `discordia-ext.lua` as well.
 
 ## Building
 
