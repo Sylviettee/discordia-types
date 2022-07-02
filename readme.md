@@ -9,25 +9,18 @@ discordia-types provides a type file for [Discordia](https://github.com/Sinister
    * [Luanalysis (IntelliJ only)](https://github.com/Benjamin-Dobell/IntelliJ-Luanalysis)
    * [EmmyLua](https://github.com/EmmyLua/EmmyLua-LanguageServer)
 2. Copy the `discordia.lua` file to your project directory.
-3. If you're using Sumneko's Lua, change `Lua.workspace.preloadFileSize` in your `settings.json` to `200`.
+3. If you're using Sumneko's Lua, make sure `Lua.workspace.preloadFileSize` in your `settings.json` is `5000` or above.
 4. When requiring discordia, give it a type annotation.
    ```lua
    ---@type discordia
    local discordia = require('discordia')
    ```
-5. When working with events, you may need explicit type annotations.
-   ```lua
-   ---@param msg Message
-   client:on('messageCreate', function(msg)
-      -- ...
-   end)
-   ```
-6. Optional: If you're using `discordia.extensions`, copy `discordia-ext.lua` as well.
+5. Optional: If you're using `discordia.extensions`, copy `discordia-ext.lua` as well.
 
 ## Building
 
 1. Install discordia via Lit (`lit install SinisterRectus/discordia`).
-2. Run `main.lua` with Luvit (`luvit main.lua <output>`)
+2. Run `main.lua` with Luvit (`luvit main.lua <output> [ext]`)
 
 ## Bugs
 
