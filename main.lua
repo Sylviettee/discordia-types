@@ -179,8 +179,10 @@ local litInfo, clientEvents, template = base:match(
    '(.-)%-%-%[ClientEventsEnd%]\n' ..
    '(.*)'
 )
+local ext = fs.readFileSync('./ext.lua')
 
-local writing = litInfo .. f('\n-- Do not touch, automatically generated!\n-- Generated on %s\n\n', os.date())
+local warning = f('\n-- Do not touch, automatically generated!\n-- Generated on %s\n\n', os.date())
+local writing = litInfo .. warning
 
 local function convert(tp)
    if tp == 'uv_timer' then
@@ -437,7 +439,7 @@ end
 template = template
    :gsub('%-%-%s?@enums', table.concat(enumDescs, '\n') .. '---@class enums\n' .. table.concat(fields, '\n'))
    :gsub('%-%-%s?@package', desc)
---handWritten = handWritten:gsub('%-%-%s?@clientEmitters', overloads)
+   :gsub('%-%-%s?@ext', ext)
 
 writing = writing .. '\n\n' .. template
 
@@ -446,3 +448,17 @@ fs.writeFileSync(
    process.argv[2],
    writing
 )
+
+---@diagnostic disable-next-line: undefined-global
+local extFile = process.argv[3]
+
+if extFile then
+   ext = ext
+      :gsub('%-%-%[extStart%](.-)%-%-%[extEnd%]', '')
+      :gsub('Ext%.', '.')
+
+   fs.writeFileSync(
+      extFile,
+      warning .. ext
+   )
+end
