@@ -1,15 +1,6 @@
---[LitMeta]
-  --[[lit-meta
-    name = "SovietKitsune/discordia-types"
-    version = "0.0.1"
-    dependencies = {}
-    description = "EmmyLua types file for discordia."
-    tags = { "discordia", "types" }
-    license = "MIT"
-    author = { name = "Soviet Kitsune", email = "sovietKitsune@soviet.solutions" }
-    homepage = "https://github.com/SovietKitsune/discordia-types"
-  ]]
---[LitMetaEnd]
+--[Init]
+---@meta
+--[InitEnd]
 --[ClientEvents]
 ---@field <name> fun(self: Client, name: string, fn: async fun()): function
 ---@field <name> fun(self: Client, name: '"ready"', fn: async fun()): function
@@ -499,3 +490,5 @@ local discordia = {
   package = package,
   storage = {}
 }
+
+return discordia

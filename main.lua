@@ -172,9 +172,9 @@ end
 
 ---
 local base = fs.readFileSync('./base.lua')
-local litInfo, clientEvents, template = base:match(
-   '%-%-%[LitMeta%]\n' ..
-   '(.-)%-%-%[LitMetaEnd%]\n' ..
+local init, clientEvents, template = base:match(
+   '%-%-%[Init%]\n' ..
+   '(.-)%-%-%[InitEnd%]\n' ..
    '%-%-%[ClientEvents%]\n' ..
    '(.-)%-%-%[ClientEventsEnd%]\n' ..
    '(.*)'
@@ -182,7 +182,7 @@ local litInfo, clientEvents, template = base:match(
 local ext = fs.readFileSync('./ext.lua')
 
 local warning = f('\n-- Do not touch, automatically generated!\n-- Generated on %s\n\n', os.date())
-local writing = litInfo .. warning
+local writing = init .. warning
 
 local function convert(tp)
    if tp == 'uv_timer' then

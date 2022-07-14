@@ -1,385 +1,128 @@
-  --[[lit-meta
-    name = "SovietKitsune/discordia-types"
-    version = "0.0.1"
-    dependencies = {}
-    description = "EmmyLua types file for discordia."
-    tags = { "discordia", "types" }
-    license = "MIT"
-    author = { name = "Soviet Kitsune", email = "sovietKitsune@soviet.solutions" }
-    homepage = "https://github.com/SovietKitsune/discordia-types"
-  ]]
+---@meta
 
 -- Do not touch, automatically generated!
--- Generated on Sat Jul  2 14:32:07 2022
+-- Generated on Thu Jul 14 12:44:25 2022
 
----Represents a private Discord text channel used to track correspondences between the current user and one other recipient.
----@class PrivateChannel: TextChannel
----@field public name string Equivalent to `PrivateChannel.recipient.username`.
----@field public recipient User The recipient of this channel's messages, other than the current user.
----@overload fun():PrivateChannel
-local PrivateChannel = {}
----Closes the channel. This does not delete the channel. To re-open the channel, use `User:getPrivateChannel`.
----@return boolean
----@async
-function PrivateChannel:close() end
----Create a new PrivateChannel
----@return PrivateChannel
-function PrivateChannel:__init() end
+---Iterable class that holds references to Discordia Class objects in no particular order.
+---@class Cache: Iterable
+---@overload fun():Cache
+local Cache = {}
+---Returns an individual object by key, where the key should match the result of calling `__hash` on the contained objects. Unlike Iterable:get, this method operates with O(1) complexity.
+---@param k any
+---@return any
+function Cache:get(k) end
+---Returns an iterator that returns all contained objects. The order of the objects is not guaranteed.
+---@return async fun()
+function Cache:iter() end
+---Create a new Cache
+---@return Cache
+function Cache:__init() end
 
----Wrapper for a bitfield that is more specifically used to represent Discord permissions. See the `permission` enumeration for acceptable permission values.
----@class Permissions
----@field public value number The raw decimal value that represents the permissions value.
----@overload fun():Permissions
-local Permissions = {}
----Defines the behavior of the `tostring` function. Returns a readable list of permissions stored for convenience of introspection.
----@return string
-function Permissions:__tostring() end
----Defines the behavior of the `==` operator. Allows permissions to be directly compared according to their value.
----@return boolean
-function Permissions:__eq() end
----Enables a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
----@vararg number
+---Abstract base class that defines the base methods and properties for a general purpose data structure with features that are better suited for an object-oriented environment. Note: All sub-classes should implement their own `__init` and `iter` methods and all stored objects should have a `__hash` method.
+---@class Iterable
+---@overload fun():Iterable
+local Iterable = {}
+---Defines the behavior of the `pairs` function. Returns an iterator that returns a `key, value` pair, where `key` is the result of calling `__hash` on the `value`.
+---@return async fun()
+function Iterable:__pairs() end
+---Defines the behavior of the `#` operator. Returns the total number of objects stored in the iterable.
+---@return async fun()
+function Iterable:__len() end
+---Returns an individual object by key, where the key should match the result of calling `__hash` on the contained objects. Operates with up to O(n) complexity.
+---@param k any
+---@return any
+function Iterable:get(k) end
+---Returns the first object that satisfies a predicate.
+---@param fn async fun()
+---@return any
+function Iterable:find(fn) end
+---Returns an iterator that returns all objects that satisfy a predicate.
+---@param fn async fun()
+---@return async fun()
+function Iterable:findAll(fn) end
+---Iterates through all objects and calls a function `fn` that takes the objects as an argument.
+---@param fn async fun()
 ---@return nil
-function Permissions:enable(...) end
----Disables a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
----@vararg number
----@return nil
-function Permissions:disable(...) end
----Returns whether this set has a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
----@vararg number
----@return boolean
-function Permissions:has(...) end
----Enables all permissions values.
----@return nil
-function Permissions:enableAll() end
----Disables all permissions values.
----@return nil
-function Permissions:disableAll() end
----Returns the hexadecimal string that represents the permissions value.
----@return string
-function Permissions:toHex() end
----Returns a table that represents the permissions value, where the keys are the permission names and the values are `true` or `false`.
+function Iterable:forEach(fn) end
+---Returns a random object that is contained in the iterable.
+---@return any
+function Iterable:random() end
+---If a predicate is provided, this returns the number of objects in the iterable that satisfy the predicate; otherwise, the total number of objects.
+---@param fn? async fun()
+---@return number
+function Iterable:count(fn) end
+---Returns a sequentially-indexed table that contains references to all objects. If a `sortBy` string is provided, then the table is sorted by that particular property. If a predicate is provided, then only objects that satisfy it will be included.
+---@param sortBy? string
+---@param fn? async fun()
 ---@return table
-function Permissions:toTable() end
----Returns an array of the names of the permissions that this object represents.
+function Iterable:toArray(sortBy, fn) end
+---Similarly to an SQL query, this returns a sorted Lua table of rows where each row corresponds to each object in the iterable, and each value in the row is selected from the objects according to the keys provided.
+---@vararg string
 ---@return table
-function Permissions:toArray() end
----Returns a new Permissions object that contains the permissions that are in either `self` or `other` (bitwise OR).
----@param other Permissions
----@return Permissions
-function Permissions:union(other) end
----Returns a new Permissions object that contains the permissions that are in both `self` and `other` (bitwise AND).
----@param other Permissions
----@return Permissions
-function Permissions:intersection(other) end
----Returns a new Permissions object that contains the permissions that are not in `self` or `other` (bitwise XOR).
----@param other Permissions
----@return Permissions
-function Permissions:difference(other) end
----Returns a new Permissions object that contains the permissions that are not in `self`, but are in `other` (or the set of all permissions if omitted).
----@param other Permissions
----@return Permissions
-function Permissions:complement(other) end
----Returns a new copy of the original permissions object.
----@return Permissions
-function Permissions:copy() end
----Returns a Permissions object with all of the defined permissions.
----@vararg number
----@return Permissions
-function Permissions.fromMany(...) end
----Returns a Permissions object with all permissions.
----@return Permissions
-function Permissions.all() end
----Create a new Permissions
----@return Permissions
-function Permissions:__init() end
+function Iterable:select(...) end
+---This returns an iterator that, when called, returns the values from each encountered object, picked by the provided keys. If a key is a string, the objects are indexed with the string. If a key is a function, the function is called with the object passed as its first argument.
+---@vararg string | async fun()
+---@return async fun()
+function Iterable:pick(...) end
+---Create a new Iterable
+---@return Iterable
+function Iterable:__init() end
 
----Represents a handle used to send webhook messages to a guild text channel in a one-way fashion. This class defines methods and properties for managing the webhook, not for sending messages.
----@class Webhook: Snowflake
----@field public guildId string The ID of the guild in which this webhook exists.
----@field public channelId string The ID of the channel in which this webhook exists.
----@field public user User | nil The user that created this webhook.
----@field public token string The token that can be used to access this webhook.
----@field public name string The name of the webhook. This should be between 2 and 32 characters in length.
----@field public type number The type of the webhook. See the `webhookType` enum for a human-readable representation.
----@field public avatar string | nil The hash for the webhook's custom avatar, if one is set.
----@field public avatarURL string Equivalent to the result of calling `Webhook:getAvatarURL()`.
----@field public defaultAvatar number The default avatar for the webhook. See the `defaultAvatar` enumeration for a human-readable representation. This should always be `defaultAvatar.blurple`.
----@field public defaultAvatarURL string Equivalent to the result of calling `Webhook:getDefaultAvatarURL()`.
----@overload fun():Webhook
-local Webhook = {}
----Returns a URL that can be used to view the webhooks's full avatar. If provided, the size must be a power of 2 while the extension must be a valid image format. If the webhook does not have a custom avatar, the default URL is returned.
----@param size? number
----@param ext? string
----@return string
-function Webhook:getAvatarURL(size, ext) end
----Returns a URL that can be used to view the webhooks's default avatar.
----@param size? number
----@return string
-function Webhook:getDefaultAvatarURL(size) end
----Sets the webhook's name. This must be between 2 and 32 characters in length.
+---Implements an asynchronous event emitter where callbacks can be subscribed to specific named events. When events are emitted, the callbacks are called in the order that they were originally registered.
+---@class Emitter
+---@overload fun():Emitter
+local Emitter = {}
+---Subscribes a callback to be called every time the named event is emitted. Callbacks registered with this method will automatically be wrapped as a new coroutine when they are called. Returns the original callback for convenience.
 ---@param name string
----@return boolean
----@async
-function Webhook:setName(name) end
----Sets the webhook's avatar. If `nil` is passed, the avatar is removed.
----@param avatar string
----@return boolean
----@async
-function Webhook:setAvatar(avatar) end
----Permanently deletes the webhook. This cannot be undone!
----@return boolean
----@async
-function Webhook:delete() end
----Create a new Webhook
----@return Webhook
-function Webhook:__init() end
-
----Represents a Discord user's presence data, either plain game or streaming presence or a rich presence. Most if not all properties may be nil.
----@class Activity
----@field public start number | nil The Unix timestamp for when this Rich Presence activity was started.
----@field public stop number | nil The Unix timestamp for when this Rich Presence activity was stopped.
----@field public name string | nil The game that the user is currently playing.
----@field public type number | nil The type of user's game status. See the `activityType` enumeration for a human-readable representation.
----@field public url string | nil The URL that is set for a user's streaming game status.
----@field public applicationId string | nil The application id controlling this Rich Presence activity.
----@field public state string | nil string for the Rich Presence state section.
----@field public details string | nil string for the Rich Presence details section.
----@field public textSmall string | nil string for the Rich Presence small image text.
----@field public textLarge string | nil string for the Rich Presence large image text.
----@field public imageSmall string | nil URL for the Rich Presence small image.
----@field public imageLarge string | nil URL for the Rich Presence large image.
----@field public partyId string | nil Party id for this Rich Presence.
----@field public partySize number | nil Size of the Rich Presence party.
----@field public partyMax number | nil Max size for the Rich Presence party.
----@field public emojiId string | nil The ID of the emoji used in this presence if one is set and if it is a custom emoji.
----@field public emojiName string | nil The name of the emoji used in this presence if one is set and if it has a custom emoji. This will be the raw string for a standard emoji.
----@field public emojiHash string | nil The discord hash for the emoji used in this presence if one is set. This will be the raw string for a standard emoji.
----@field public emojiURL string | nil string The URL that can be used to view a full version of the emoji used in this activity if one is set and if it is a custom emoji.
----@overload fun():Activity
-local Activity = {}
----Returns `Activity.parent:__hash()`
----@return string
-function Activity:__hash() end
----Create a new Activity
----@return Activity
-function Activity:__init() end
-
----Represents an invitation to a Discord guild channel. Invites can be used to join a guild, though they are not always permanent.
----@class Invite: Container
----@field public code string The invite's code which can be used to identify the invite.
----@field public guildId string The Snowflake ID of the guild to which this invite belongs.
----@field public guildName string The name of the guild to which this invite belongs.
----@field public channelId string The Snowflake ID of the channel to which this belongs.
----@field public channelName string The name of the channel to which this invite belongs.
----@field public channelType number The type of the channel to which this invite belongs. Use the `channelType` enumeration for a human-readable representation.
----@field public guildIcon string | nil The hash for the guild's custom icon, if one is set.
----@field public guildBanner string | nil The hash for the guild's custom banner, if one is set.
----@field public guildSplash string | nil The hash for the guild's custom splash, if one is set.
----@field public guildIconURL string | nil The URL that can be used to view the guild's icon, if one is set.
----@field public guildBannerURL string | nil The URL that can be used to view the guild's banner, if one is set.
----@field public guildSplashURL string | nil The URL that can be used to view the guild's splash, if one is set.
----@field public guildDescription string | nil The guild's custom description, if one is set.
----@field public guildVerificationLevel number | nil The guild's verification level, if available.
----@field public inviter User | nil The object of the user that created the invite. This will not exist if the invite is a guild widget or a vanity invite.
----@field public uses number | nil How many times this invite has been used. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public maxUses number | nil The maximum amount of times this invite can be used. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public maxAge number | nil How long, in seconds, this invite lasts before it expires. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public temporary boolean | nil Whether the invite grants temporary membership. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public createdAt string | nil The date and time at which the invite was created, represented as an ISO 8601 string plus microseconds when available. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public revoked boolean | nil Whether the invite has been revoked. This will not exist if the invite is accessed via `Client:getInvite`.
----@field public approximatePresenceCount number | nil The approximate count of online members.
----@field public approximateMemberCount number | nil The approximate count of all members.
----@overload fun():Invite
-local Invite = {}
----Returns `Invite.code`
----@return string
-function Invite:__hash() end
----Permanently deletes the invite. This cannot be undone!
----@return boolean
----@async
-function Invite:delete() end
----Create a new Invite
----@return Invite
-function Invite:__init() end
-
----Represents a Discord guild member. Though one user may be a member in more than one guild, each presence is represented by a different member object associated with that guild. Note that any method or property that exists for the User class is also available in the Member class.
----@class Member: UserPresence
----@field public roles ArrayIterable An iterable array of guild roles that the member has. This does not explicitly include the default everyone role. Object order is not guaranteed.
----@field public name string If the member has a nickname, then this will be equivalent to that nickname. Otherwise, this is equivalent to `Member.user.username`.
----@field public nickname string | nil The member's nickname, if one is set.
----@field public joinedAt string | nil The date and time at which the current member joined the guild, represented as an ISO 8601 string plus microseconds when available. Member objects generated via presence updates lack this property.
----@field public premiumSince string | nil The date and time at which the current member boosted the guild, represented as an ISO 8601 string plus microseconds when available.
----@field public voiceChannel GuildVoiceChannel | nil The voice channel to which this member is connected in the current guild.
----@field public muted boolean Whether the member is voice muted in its guild.
----@field public deafened boolean Whether the member is voice deafened in its guild.
----@field public guild Guild The guild in which this member exists.
----@field public highestRole Role The highest positioned role that the member has. If the member has no explicit roles, then this is equivalent to `Member.guild.defaultRole`.
----@overload fun():Member
-local Member = {}
----Returns a color object that represents the member's color as determined by its highest colored role. If the member has no colored roles, then the default color with a value of 0 is returned.
----@return Color
-function Member:getColor() end
----Checks whether the member has a specific permission. If `channel` is omitted, then only guild-level permissions are checked. This is a relatively expensive operation. If you need to check multiple permissions at once, use the `getPermissions` method and check the resulting object.
----@param channel? GuildChannel
----@param perm Permissions | number
----@return boolean
-function Member:hasPermission(channel, perm) end
----Returns a permissions object that represents the member's total permissions for the guild, or for a specific channel if one is provided. If you just need to check one permission, use the `hasPermission` method.
----@param channel? GuildChannel
----@return Permissions
-function Member:getPermissions(channel) end
----Adds a role to the member. If the member already has the role, then no action is taken. Note that the everyone role cannot be explicitly added.
----@param id Role | string
----@return boolean
----@async
-function Member:addRole(id) end
----Removes a role from the member. If the member does not have the role, then no action is taken. Note that the everyone role cannot be removed.
----@param id Role | string
----@return boolean
----@async
-function Member:removeRole(id) end
----Checks whether the member has a specific role. This will return true for the guild's default role in addition to any explicitly assigned roles.
----@param id Role | string
----@return boolean
-function Member:hasRole(id) end
----Sets the member's nickname. This must be between 1 and 32 characters in length. Pass `nil` to remove the nickname.
----@param nick string
----@return boolean
----@async
-function Member:setNickname(nick) end
----Moves the member to a new voice channel, but only if the member has an active voice connection in the current guild. Due to complexities in voice state handling, the member's `voiceChannel` property will update asynchronously via WebSocket; not as a result of the HTTP request.
----@param id Channel | string
----@return boolean
----@async
-function Member:setVoiceChannel(id) end
----Mutes the member in its guild.
----@return boolean
----@async
-function Member:mute() end
----Unmutes the member in its guild.
----@return boolean
----@async
-function Member:unmute() end
----Deafens the member in its guild.
----@return boolean
----@async
-function Member:deafen() end
----Undeafens the member in its guild.
----@return boolean
----@async
-function Member:undeafen() end
----Equivalent to `Member.guild:kickUser(Member.user, reason)`
----@param reason string
----@return boolean
----@async
-function Member:kick(reason) end
----Equivalent to `Member.guild:banUser(Member.user, reason, days)`
----@param reason string
----@param days number
----@return boolean
----@async
-function Member:ban(reason, days) end
----Equivalent to `Member.guild:unbanUser(Member.user, reason)`
----@param reason string
----@return boolean
----@async
-function Member:unban(reason) end
----Create a new Member
----@return Member
-function Member:__init() end
-
----Represents a text message sent in a Discord text channel. Messages can contain simple content strings, rich embeds, attachments, or reactions.
----@class Message: Snowflake
----@field public reactions Cache An iterable cache of all reactions that exist for this message.
----@field public mentionedUsers ArrayIterable An iterable array of all users that are mentioned in this message.
----@field public mentionedRoles ArrayIterable An iterable array of known roles that are mentioned in this message, excluding the default everyone role. The message must be in a guild text channel and the roles must be cached in that channel's guild for them to appear here.
----@field public mentionedEmojis ArrayIterable An iterable array of all known emojis that are mentioned in this message. If the client does not have the emoji cached, then it will not appear here.
----@field public mentionedChannels ArrayIterable An iterable array of all known channels that are mentioned in this message. If the client does not have the channel cached, then it will not appear here.
----@field public cleanContent string The message content with all recognized mentions replaced by names and with @everyone and @here mentions escaped by a zero-width space (ZWSP).
----@field public mentionsEveryone boolean Whether this message mentions @everyone or @here.
----@field public pinned boolean Whether this message belongs to its channel's pinned messages.
----@field public tts boolean Whether this message is a text-to-speech message.
----@field public nonce string | number | boolean | nil Used by the official Discord client to detect the success of a sent message.
----@field public editedTimestamp string | nil The date and time at which the message was most recently edited, represented as an ISO 8601 string plus microseconds when available.
----@field public oldContent string | table Yields a table containing keys as timestamps and value as content of the message at that time.
----@field public content string The raw message content. This should be between 0 and 2000 characters in length.
----@field public author User The object of the user that created the message.
----@field public channel TextChannel The channel in which this message was sent.
----@field public type number The message type. Use the `messageType` enumeration for a human-readable representation.
----@field public embed table | nil A raw data table that represents the first rich embed that exists in this message. See the Discord documentation for more information.
----@field public attachment table | nil A raw data table that represents the first file attachment that exists in this message. See the Discord documentation for more information.
----@field public embeds table A raw data table that contains all embeds that exist for this message. If there are none, this table will not be present.
----@field public attachments table A raw data table that contains all attachments that exist for this message. If there are none, this table will not be present.
----@field public guild Guild | nil The guild in which this message was sent. This will not exist if the message was not sent in a guild text channel. Equivalent to `Message.channel.guild`.
----@field public member Member | nil The member object of the message's author. This will not exist if the message is not sent in a guild text channel or if the member object is not cached. Equivalent to `Message.guild.members:get(Message.author.id)`.
----@field public referencedMessage Message | nil If available, the previous message that this current message references as seen in replies.
----@field public link string URL that can be used to jump-to the message in the Discord client.
----@field public webhookId string | nil The ID of the webhook that generated this message, if applicable.
----@overload fun():Message
-local Message = {}
----Sets the message's content. The message must be authored by the current user (ie: you cannot change the content of messages sent by other users). The content must be from 1 to 2000 characters in length.
----@param content string
----@return boolean
----@async
-function Message:setContent(content) end
----Sets the message's embed. The message must be authored by the current user. (ie: you cannot change the embed of messages sent by other users).
----@param embed table
----@return boolean
----@async
-function Message:setEmbed(embed) end
----Hides all embeds for this message.
----@return boolean
----@async
-function Message:hideEmbeds() end
----Shows all embeds for this message.
----@return boolean
----@async
-function Message:showEmbeds() end
----Indicates whether the message has a particular flag set.
----@param flag number
----@return boolean
-function Message:hasFlag(flag) end
----Sets multiple properties of the message at the same time using a table similar to the one supported by `TextChannel.send`, except only `content` and `embed` are valid fields; `mention(s)`, `file(s)`, etc are not supported. The message must be authored by the current user. (ie: you cannot change the embed of messages sent by other users).
----@param data table
----@return boolean
----@async
-function Message:update(data) end
----Pins the message in the channel.
----@return boolean
----@async
-function Message:pin() end
----Unpins the message in the channel.
----@return boolean
----@async
-function Message:unpin() end
----Adds a reaction to the message. Note that this does not return the new reaction object; wait for the `reactionAdd` event instead.
----@param emoji Emoji | Reaction | string
----@return boolean
----@async
-function Message:addReaction(emoji) end
----Removes a reaction from the message. Note that this does not return the old reaction object; wait for the `reactionRemove` event instead. If no user is indicated, then this will remove the current user's reaction.
----@param emoji Emoji | Reaction | string
----@param id? User | string
----@return boolean
----@async
-function Message:removeReaction(emoji, id) end
----Removes all reactions from the message.
----@return boolean
----@async
-function Message:clearReactions() end
----Permanently deletes the message. This cannot be undone!
----@return boolean
----@async
-function Message:delete() end
----Equivalent to `Message.channel:send(content)`.
----@param content string | table
----@return Message
----@async
-function Message:reply(content) end
----Create a new Message
----@return Message
-function Message:__init() end
+---@param fn async fun()
+---@return async fun()
+function Emitter:on(name, fn) end
+---Subscribes a callback to be called only the first time this event is emitted. Callbacks registered with this method will automatically be wrapped as a new coroutine when they are called. Returns the original callback for convenience.
+---@param name string
+---@param fn async fun()
+---@return async fun()
+function Emitter:once(name, fn) end
+---Subscribes a callback to be called every time the named event is emitted. Callbacks registered with this method are not automatically wrapped as a coroutine. Returns the original callback for convenience.
+---@param name string
+---@param fn async fun()
+---@return async fun()
+function Emitter:onSync(name, fn) end
+---Subscribes a callback to be called only the first time this event is emitted. Callbacks registered with this method are not automatically wrapped as a coroutine. Returns the original callback for convenience.
+---@param name string
+---@param fn async fun()
+---@return async fun()
+function Emitter:onceSync(name, fn) end
+---Emits the named event and a variable number of arguments to pass to the event callbacks.
+---@param name string
+---@vararg any?
+---@return nil
+function Emitter:emit(name, ...) end
+---Returns an iterator for all callbacks registered to the named event.
+---@param name string
+---@return async fun()
+function Emitter:getListeners(name) end
+---Returns the number of callbacks registered to the named event.
+---@param name string
+---@return number
+function Emitter:getListenerCount(name) end
+---Unregisters all instances of the callback from the named event.
+---@param name string
+---@param fn async fun()
+---@return nil
+function Emitter:removeListener(name, fn) end
+---Unregisters all callbacks for the emitter. If a name is passed, then only callbacks for that specific event are unregistered.
+---@param name string | nil
+---@return nil
+function Emitter:removeAllListeners(name) end
+---When called inside of a coroutine, this will yield the coroutine until the named event is emitted. If a timeout (in milliseconds) is provided, the function will return after the time expires, regardless of whether the event is emitted, and `false` will be returned; otherwise, `true` is returned. If a predicate is provided, events that do not pass the predicate will be ignored.
+---@param name string
+---@param timeout? number
+---@param predicate? async fun()
+---@return boolean ...
+function Emitter:waitFor(name, timeout, predicate) end
+---Create a new Emitter
+---@return Emitter
+function Emitter:__init() end
 
 ---Represents an emoji that has been used to react to a Discord text message. Both standard and custom emojis can be used.
 ---@class Reaction: Container
@@ -421,278 +164,137 @@ function Reaction:delete(id) end
 ---@return Reaction
 function Reaction:__init() end
 
----Defines the base methods and properties for all Discord guild channels.
----@class GuildChannel: Channel
----@field public permissionOverwrites Cache An iterable cache of all overwrites that exist in this channel. To access an overwrite that may exist, but is not cached, use `GuildChannel:getPermissionOverwriteFor`.
----@field public name string The name of the channel. This should be between 2 and 100 characters in length.
----@field public position number The position of the channel, where 0 is the highest.
----@field public guild Guild The guild in which this channel exists.
----@field public category GuildCategoryChannel | nil The parent channel category that may contain this channel.
----@field public private boolean Whether the "everyone" role has permission to view this channel. In the Discord channel, private text channels are indicated with a lock icon and private voice channels are not visible.
----@overload fun():GuildChannel
-local GuildChannel = {}
----Sets the channel's name. This must be between 2 and 100 characters in length.
----@param name string
+---Represents a voice channel in a Discord guild, where guild members can connect and communicate via voice chat.
+---@class GuildVoiceChannel: GuildChannel
+---@field public bitrate number The channel's bitrate in bits per second (bps). This should be between 8000 and 96000 (or 128000 for partnered servers).
+---@field public userLimit number The amount of users allowed to be in this channel. Users with `moveMembers` permission ignore this limit.
+---@field public connectedMembers TableIterable An iterable of all users connected to the channel.
+---@field public connection VoiceConnection | nil The VoiceConnection for this channel if one exists.
+---@overload fun():GuildVoiceChannel
+local GuildVoiceChannel = {}
+---Sets the channel's audio bitrate in bits per second (bps). This must be between 8000 and 96000 (or 128000 for partnered servers). If `nil` is passed, the default is set, which is 64000.
+---@param bitrate number
 ---@return boolean
 ---@async
-function GuildChannel:setName(name) end
----Sets the channel's parent category.
----@param id Channel | string
+function GuildVoiceChannel:setBitrate(bitrate) end
+---Sets the channel's user limit. This must be between 0 and 99 (where 0 is unlimited). If `nil` is passed, the default is set, which is 0.
+---@param user_limit number
 ---@return boolean
 ---@async
-function GuildChannel:setCategory(id) end
----Moves a channel up its list. The parameter `n` indicates how many spaces the channel should be moved, clamped to the highest position, with a default of 1 if it is omitted. This will also normalize the positions of all channels.
----@param n number
+function GuildVoiceChannel:setUserLimit(user_limit) end
+---Join this channel and form a connection to the Voice Gateway.
+---@return VoiceConnection
+function GuildVoiceChannel:join() end
+---Leave this channel if there is an existing voice connection to it. Equivalent to GuildVoiceChannel.connection:close()
 ---@return boolean
 ---@async
-function GuildChannel:moveUp(n) end
----Moves a channel down its list. The parameter `n` indicates how many spaces the channel should be moved, clamped to the lowest position, with a default of 1 if it is omitted. This will also normalize the positions of all channels.
----@param n number
----@return boolean
----@async
-function GuildChannel:moveDown(n) end
----Creates an invite to the channel. Optional payload fields are: max_age: number time in seconds until expiration, default = 86400 (24 hours), max_uses: number total number of uses allowed, default = 0 (unlimited), temporary: boolean whether the invite grants temporary membership, default = false, unique: boolean whether a unique code should be guaranteed, default = false
----@param payload? table
----@return Invite
----@async
-function GuildChannel:createInvite(payload) end
----Returns a newly constructed cache of all invite objects for the channel. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
----@return Cache
----@async
-function GuildChannel:getInvites() end
----Returns a permission overwrite object corresponding to the provided member or role object. If a cached overwrite is not found, an empty overwrite with zero-permissions is returned instead. Therefore, this can be used to create a new overwrite when one does not exist. Note that the member or role must exist in the same guild as the channel does.
----@param obj Role | Member
----@return PermissionOverwrite
-function GuildChannel:getPermissionOverwriteFor(obj) end
----Permanently deletes the channel. This cannot be undone!
----@return boolean
----@async
-function GuildChannel:delete() end
----Create a new GuildChannel
----@return GuildChannel
-function GuildChannel:__init() end
-
----Represents a Discord guild (or server). Guilds are a collection of members, channels, and roles that represents one community.
----@class Guild: Snowflake
----@field public shardId number The ID of the shard on which this guild is served. If only one shard is in operation, then this will always be 0.
----@field public name string The guild's name. This should be between 2 and 100 characters in length.
----@field public icon string | nil The hash for the guild's custom icon, if one is set.
----@field public iconURL string | nil The URL that can be used to view the guild's icon, if one is set.
----@field public splash string | nil The hash for the guild's custom splash image, if one is set. Only partnered guilds may have this.
----@field public splashURL string | nil The URL that can be used to view the guild's custom splash image, if one is set. Only partnered guilds may have this.
----@field public banner string | nil The hash for the guild's custom banner, if one is set.
----@field public bannerURL string | nil The URL that can be used to view the guild's banner, if one is set.
----@field public large boolean Whether the guild has an arbitrarily large amount of members. Guilds that are "large" will not initialize with all members cached.
----@field public lazy boolean Whether the guild follows rules for the lazy-loading of client data.
----@field public region string The voice region that is used for all voice connections in the guild.
----@field public vanityCode string | nil The guild's vanity invite URL code, if one exists.
----@field public description string | nil The guild's custom description, if one exists.
----@field public maxMembers number | nil The guild's maximum member count, if available.
----@field public maxPresences number | nil The guild's maximum presence count, if available.
----@field public mfaLevel number The guild's multi-factor (or two-factor) verification level setting. A value of 0 indicates that MFA is not required; a value of 1 indicates that MFA is required for administrative actions.
----@field public joinedAt string The date and time at which the current user joined the guild, represented as an ISO 8601 string plus microseconds when available.
----@field public afkTimeout number The guild's voice AFK timeout in seconds.
----@field public unavailable boolean Whether the guild is unavailable. If the guild is unavailable, then no property is guaranteed to exist except for this one and the guild's ID.
----@field public totalMemberCount number The total number of members that belong to this guild. This should always be greater than or equal to the total number of cached members.
----@field public verificationLevel number The guild's verification level setting. See the `verificationLevel` enumeration for a human-readable representation.
----@field public notificationSetting number The guild's default notification setting. See the `notficationSetting` enumeration for a human-readable representation.
----@field public explicitContentSetting number The guild's explicit content level setting. See the `explicitContentLevel` enumeration for a human-readable representation.
----@field public premiumTier number The guild's premier tier affected by nitro server boosts. See the `premiumTier` enumeration for a human-readable representation
----@field public premiumSubscriptionCount number The number of users that have upgraded the guild with nitro server boosting.
----@field public features table Raw table of VIP features that are enabled for the guild.
----@field public me Member | nil Equivalent to `Guild.members:get(Guild.client.user.id)`.
----@field public owner Member | nil Equivalent to `Guild.members:get(Guild.ownerId)`.
----@field public ownerId string The Snowflake ID of the guild member that owns the guild.
----@field public afkChannelId string | nil The Snowflake ID of the channel that is used for AFK members, if one is set.
----@field public afkChannel GuildVoiceChannel | nil Equivalent to `Guild.voiceChannels:get(Guild.afkChannelId)`.
----@field public systemChannelId string | nil The channel id where Discord's join messages will be displayed.
----@field public systemChannel GuildTextChannel | nil The channel where Discord's join messages will be displayed.
----@field public defaultRole Role Equivalent to `Guild.roles:get(Guild.id)`.
----@field public connection VoiceConnection | nil The VoiceConnection for this guild if one exists.
----@field public roles Cache An iterable cache of all roles that exist in this guild. This includes the default everyone role.
----@field public emojis Cache An iterable cache of all emojis that exist in this guild. Note that standard unicode emojis are not found here; only custom emojis.
----@field public members Cache An iterable cache of all members that exist in this guild and have been already loaded. If the `cacheAllMembers` client option (and the `syncGuilds` option for user-accounts) is enabled on start-up, then all members will be cached. Otherwise, offline members may not be cached. To access a member that may exist, but is not cached, use `Guild:getMember`.
----@field public textChannels Cache An iterable cache of all text channels that exist in this guild.
----@field public voiceChannels Cache An iterable cache of all voice channels that exist in this guild.
----@field public categories Cache An iterable cache of all channel categories that exist in this guild.
----@overload fun():Guild
-local Guild = {}
----Asynchronously loads all members for this guild. You do not need to call this if the `cacheAllMembers` client option (and the `syncGuilds` option for user-accounts) is enabled on start-up.
----@return boolean
-function Guild:requestMembers() end
----Asynchronously loads certain data and enables the receiving of certain events for this guild. You do not need to call this if the `syncGuilds` client option is enabled on start-up. Note: This is only for user accounts. Bot accounts never need to sync guilds!
----@return boolean
-function Guild:sync() end
----Gets a member object by ID. If the object is already cached, then the cached object will be returned; otherwise, an HTTP request is made.
----@param id User | string
----@return Member
----@async
-function Guild:getMember(id) end
----Gets a role object by ID.
----@param id Role | string
----@return Role
-function Guild:getRole(id) end
----Gets a emoji object by ID.
----@param id Emoji | string
----@return Emoji
-function Guild:getEmoji(id) end
----Gets a text, voice, or category channel object by ID.
----@param id Channel | string
----@return GuildChannel
-function Guild:getChannel(id) end
----Creates a new text channel in this guild. The name must be between 2 and 100 characters in length.
----@param name string
----@return GuildTextChannel
----@async
-function Guild:createTextChannel(name) end
----Creates a new voice channel in this guild. The name must be between 2 and 100 characters in length.
----@param name string
+function GuildVoiceChannel:leave() end
+---Create a new GuildVoiceChannel
 ---@return GuildVoiceChannel
----@async
-function Guild:createVoiceChannel(name) end
----Creates a channel category in this guild. The name must be between 2 and 100 characters in length.
----@param name string
----@return GuildCategoryChannel
----@async
-function Guild:createCategory(name) end
----Creates a new role in this guild. The name must be between 1 and 100 characters in length.
----@param name string
----@return Role
----@async
-function Guild:createRole(name) end
----Creates a new emoji in this guild. The name must be between 2 and 32 characters in length. The image must not be over 256kb, any higher will return a 400 Bad Request
----@param name string
----@param image string
----@return Emoji
----@async
-function Guild:createEmoji(name, image) end
----Sets the guilds name. This must be between 2 and 100 characters in length.
+function GuildVoiceChannel:__init() end
+
+---Represents a Discord group channel. Essentially a private channel that may have more than one and up to ten recipients. This class should only be relevant to user-accounts; bots cannot normally join group channels.
+---@class GroupChannel: TextChannel
+---@field public recipients SecondaryCache A secondary cache of users that are present in the channel.
+---@field public name string The name of the channel.
+---@field public ownerId string The Snowflake ID of the user that owns (created) the channel.
+---@field public owner User | nil Equivalent to `GroupChannel.recipients:get(GroupChannel.ownerId)`.
+---@field public icon string | nil The hash for the channel's custom icon, if one is set.
+---@field public iconURL string | nil The URL that can be used to view the channel's icon, if one is set.
+---@overload fun():GroupChannel
+local GroupChannel = {}
+---Sets the channel's name. This must be between 1 and 100 characters in length.
 ---@param name string
 ---@return boolean
 ---@async
-function Guild:setName(name) end
----Sets the guild's voice region (eg: `us-east`). See `listVoiceRegions` for a list of acceptable regions.
----@param region string
----@return boolean
----@async
-function Guild:setRegion(region) end
----Sets the guild's verification level setting. See the `verificationLevel` enumeration for acceptable values.
----@param verification_level number
----@return boolean
----@async
-function Guild:setVerificationLevel(verification_level) end
----Sets the guild's default notification setting. See the `notficationSetting` enumeration for acceptable values.
----@param default_message_notifications number
----@return boolean
----@async
-function Guild:setNotificationSetting(default_message_notifications) end
----Sets the guild's explicit content level setting. See the `explicitContentLevel` enumeration for acceptable values.
----@param explicit_content_filter number
----@return boolean
----@async
-function Guild:setExplicitContentSetting(explicit_content_filter) end
----Sets the guild's AFK timeout in seconds.
----@param afk_timeout number
----@return number
----@async
-function Guild:setAFKTimeout(afk_timeout) end
----Sets the guild's AFK channel.
----@param id Channel | string
----@return boolean
----@async
-function Guild:setAFKChannel(id) end
----Sets the guild's join message channel.
----@param id Channel | string
----@return boolean
----@async
-function Guild:setSystemChannel(id) end
----Transfers ownership of the guild to another user. Only the current guild owner can do this.
----@param id User | string
----@return boolean
----@async
-function Guild:setOwner(id) end
----Sets the guild's icon. To remove the icon, pass `nil`.
+function GroupChannel:setName(name) end
+---Sets the channel's icon. To remove the icon, pass `nil`.
 ---@param icon string
 ---@return boolean
 ---@async
-function Guild:setIcon(icon) end
----Sets the guild's banner. To remove the banner, pass `nil`.
----@param banner string
+function GroupChannel:setIcon(icon) end
+---Adds a user to the channel.
+---@param id User | string
 ---@return boolean
 ---@async
-function Guild:setBanner(banner) end
----Sets the guild's splash. To remove the splash, pass `nil`.
----@param splash string
+function GroupChannel:addRecipient(id) end
+---Removes a user from the channel.
+---@param id User | string
 ---@return boolean
 ---@async
-function Guild:setSplash(splash) end
----Returns the number of members that would be pruned from the guild if a prune were to be executed.
----@param days? number
+function GroupChannel:removeRecipient(id) end
+---Removes the client's user from the channel. If no users remain, the channel is destroyed.
+---@return boolean
+---@async
+function GroupChannel:leave() end
+---Create a new GroupChannel
+---@return GroupChannel
+function GroupChannel:__init() end
+
+---Represents a connection to a Discord voice server.
+---@class VoiceConnection
+---@field public channel GuildVoiceChannel | nil The corresponding GuildVoiceChannel for this connection, if one exists.
+---@overload fun():VoiceConnection
+local VoiceConnection = {}
+---Returns the bitrate of the interal Opus encoder in bits per second (bps).
+---@return nil
+function VoiceConnection:getBitrate() end
+---Sets the bitrate of the interal Opus encoder in bits per second (bps). This should be between 8000 and 128000, inclusive.
+---@param bitrate number
+---@return nil
+function VoiceConnection:setBitrate(bitrate) end
+---Returns the complexity of the interal Opus encoder.
 ---@return number
----@async
-function Guild:getPruneCount(days) end
----Prunes (removes) inactive, roleless members from the guild who have not been online in the last provided days. If the `count` boolean is provided, the number of pruned members is returned; otherwise, `0` is returned.
----@param days? number
----@param count? boolean
----@return number
----@async
-function Guild:pruneMembers(days, count) end
----Returns a newly constructed cache of all ban objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
----@return Cache
----@async
-function Guild:getBans() end
----This will return a Ban object for a giver user if that user is banned from the guild; otherwise, `nil` is returned.
----@param id User | string
----@return Ban
----@async
-function Guild:getBan(id) end
----Returns a newly constructed cache of all invite objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
----@return Cache
----@async
-function Guild:getInvites() end
----Returns a newly constructed cache of audit log entry objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects. If included, the query parameters include: query.limit: number, query.user: UserId Resolvable query.before: EntryId Resolvable, query.type: ActionType Resolvable
----@param query? table
----@return Cache
----@async
-function Guild:getAuditLogs(query) end
----Returns a newly constructed cache of all webhook objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
----@return Cache
----@async
-function Guild:getWebhooks() end
----Returns a raw data table that contains a list of available voice regions for this guild, as provided by Discord, with no additional parsing.
----@return table
----@async
-function Guild:listVoiceRegions() end
----Removes the current user from the guild.
+function VoiceConnection:getComplexity() end
+---Sets the complexity of the interal Opus encoder. This should be between 0 and 10, inclusive.
+---@param complexity number
+---@return nil
+function VoiceConnection:setComplexity(complexity) end
+---Plays PCM data over the established connection. If a duration (in milliseconds) is provided, the audio stream will automatically stop after that time has elapsed; otherwise, it will play until the source is exhausted. The returned number is the time elapsed while streaming and the returned string is a message detailing the reason why the stream stopped. For more information about acceptable sources, see the [[voice]] page.
+---@param source string | async fun() | table | userdata
+---@param duration? number
+---@return number string
+function VoiceConnection:playPCM(source, duration) end
+---Plays audio over the established connection using an FFmpeg process, assuming FFmpeg is properly configured. If a duration (in milliseconds) is provided, the audio stream will automatically stop after that time has elapsed; otherwise, it will play until the source is exhausted. The returned number is the time elapsed while streaming and the returned string is a message detailing the reason why the stream stopped. For more information about using FFmpeg, see the [[voice]] page.
+---@param path string
+---@param duration? number
+---@return number string
+function VoiceConnection:playFFmpeg(path, duration) end
+---Temporarily pauses the audio stream for this connection, if one is active. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually paused, usually on the next tick.
+---@return nil
+function VoiceConnection:pauseStream() end
+---Resumes the audio stream for this connection, if one is active and paused. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually resumed, usually on the next tick.
+---@return nil
+function VoiceConnection:resumeStream() end
+---Irreversibly stops the audio stream for this connection, if one is active. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually stopped, usually on the next tick.
+---@return nil
+function VoiceConnection:stopStream() end
+---Stops the audio stream for this connection, if one is active, disconnects from the voice server, and leaves the corresponding voice channel. Like most Discordia methods, this must be called inside of a coroutine.
 ---@return boolean
+function VoiceConnection:close() end
+---Create a new VoiceConnection
+---@return VoiceConnection
+function VoiceConnection:__init() end
+
+---Represents a channel category in a Discord guild, used to organize individual text or voice channels in that guild.
+---@class GuildCategoryChannel: GuildChannel
+---@field public textChannels FilteredIterable Iterable of all textChannels in the Category.
+---@field public voiceChannels FilteredIterable Iterable of all voiceChannels in the Category.
+---@overload fun():GuildCategoryChannel
+local GuildCategoryChannel = {}
+---Creates a new GuildTextChannel with this category as it's parent. Similar to `Guild:createTextChannel(name)`
+---@param name string
+---@return GuildTextChannel
 ---@async
-function Guild:leave() end
----Permanently deletes the guild. The current user must owner the server. This cannot be undone!
----@return boolean
+function GuildCategoryChannel:createTextChannel(name) end
+---Creates a new GuildVoiceChannel with this category as it's parent. Similar to `Guild:createVoiceChannel(name)`
+---@param name string
+---@return GuildVoiceChannel
 ---@async
-function Guild:delete() end
----Kicks a user/member from the guild with an optional reason.
----@param id User | string
----@param reason? string
----@return boolean
----@async
-function Guild:kickUser(id, reason) end
----Bans a user/member from the guild with an optional reason. The `days` parameter is the number of days to consider when purging messages, up to 7.
----@param id User | string
----@param reason? string
----@param days? number
----@return boolean
----@async
-function Guild:banUser(id, reason, days) end
----Unbans a user/member from the guild with an optional reason.
----@param id User | string
----@param reason? string
----@return boolean
----@async
-function Guild:unbanUser(id, reason) end
----Create a new Guild
----@return Guild
-function Guild:__init() end
+function GuildCategoryChannel:createVoiceChannel(name) end
+---Create a new GuildCategoryChannel
+---@return GuildCategoryChannel
+function GuildCategoryChannel:__init() end
 
 ---The main point of entry into a Discordia application. All data relevant to Discord is accessible through a client instance or its child objects after a connection to Discord is established with the `run` method. In other words, client data should not be expected and most client methods should not be called until after the `ready` event is received. Base emitter methods may be called at any time. See [[client options]].
 ---@class Client: Emitter
@@ -986,61 +588,631 @@ function Client:setAFK(afk) end
 ---@return Client
 function Client:__init(options) end
 
----Iterable class that wraps another iterable and serves a subset of the objects that the original iterable contains.
----@class FilteredIterable: Iterable
----@overload fun():FilteredIterable
-local FilteredIterable = {}
+---Represents a length of time and provides utilities for converting to and from different formats. Supported units are: weeks, days, hours, minutes, seconds, and milliseconds.
+---@class Time
+---@overload fun():Time
+local Time = {}
+---Returns a human-readable string built from the set of normalized time values that the object represents.
+---@return string
+function Time:toString() end
+---Returns the total number of weeks that the time object represents.
+---@return number
+function Time:toWeeks() end
+---Returns the total number of days that the time object represents.
+---@return number
+function Time:toDays() end
+---Returns the total number of hours that the time object represents.
+---@return number
+function Time:toHours() end
+---Returns the total number of minutes that the time object represents.
+---@return number
+function Time:toMinutes() end
+---Returns the total number of seconds that the time object represents.
+---@return number
+function Time:toSeconds() end
+---Returns the total number of milliseconds that the time object represents.
+---@return number
+function Time:toMilliseconds() end
+---Returns a table of normalized time values that represent the time object in a more accessible form.
+---@return number
+function Time:toTable() end
+---Constructs a new Time object from a value interpreted as weeks, where a week is equal to 7 days.
+---@param t number
+---@return Time
+function Time.fromWeeks(t) end
+---Constructs a new Time object from a value interpreted as days, where a day is equal to 24 hours.
+---@param t number
+---@return Time
+function Time.fromDays(t) end
+---Constructs a new Time object from a value interpreted as hours, where an hour is equal to 60 minutes.
+---@param t number
+---@return Time
+function Time.fromHours(t) end
+---Constructs a new Time object from a value interpreted as minutes, where a minute is equal to 60 seconds.
+---@param t number
+---@return Time
+function Time.fromMinutes(t) end
+---Constructs a new Time object from a value interpreted as seconds, where a second is equal to 1000 milliseconds.
+---@param t number
+---@return Time
+function Time.fromSeconds(t) end
+---Constructs a new Time object from a value interpreted as milliseconds, the base unit represented.
+---@param t number
+---@return Time
+function Time.fromMilliseconds(t) end
+---Constructs a new Time object from a table of time values where the keys are defined in the constructors above (eg: `weeks`, `days`, `hours`).
+---@param t table
+---@return Time
+function Time.fromTable(t) end
+---Create a new Time
+---@return Time
+function Time:__init() end
+
+---Represents an invitation to a Discord guild channel. Invites can be used to join a guild, though they are not always permanent.
+---@class Invite: Container
+---@field public code string The invite's code which can be used to identify the invite.
+---@field public guildId string The Snowflake ID of the guild to which this invite belongs.
+---@field public guildName string The name of the guild to which this invite belongs.
+---@field public channelId string The Snowflake ID of the channel to which this belongs.
+---@field public channelName string The name of the channel to which this invite belongs.
+---@field public channelType number The type of the channel to which this invite belongs. Use the `channelType` enumeration for a human-readable representation.
+---@field public guildIcon string | nil The hash for the guild's custom icon, if one is set.
+---@field public guildBanner string | nil The hash for the guild's custom banner, if one is set.
+---@field public guildSplash string | nil The hash for the guild's custom splash, if one is set.
+---@field public guildIconURL string | nil The URL that can be used to view the guild's icon, if one is set.
+---@field public guildBannerURL string | nil The URL that can be used to view the guild's banner, if one is set.
+---@field public guildSplashURL string | nil The URL that can be used to view the guild's splash, if one is set.
+---@field public guildDescription string | nil The guild's custom description, if one is set.
+---@field public guildVerificationLevel number | nil The guild's verification level, if available.
+---@field public inviter User | nil The object of the user that created the invite. This will not exist if the invite is a guild widget or a vanity invite.
+---@field public uses number | nil How many times this invite has been used. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public maxUses number | nil The maximum amount of times this invite can be used. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public maxAge number | nil How long, in seconds, this invite lasts before it expires. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public temporary boolean | nil Whether the invite grants temporary membership. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public createdAt string | nil The date and time at which the invite was created, represented as an ISO 8601 string plus microseconds when available. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public revoked boolean | nil Whether the invite has been revoked. This will not exist if the invite is accessed via `Client:getInvite`.
+---@field public approximatePresenceCount number | nil The approximate count of online members.
+---@field public approximateMemberCount number | nil The approximate count of all members.
+---@overload fun():Invite
+local Invite = {}
+---Returns `Invite.code`
+---@return string
+function Invite:__hash() end
+---Permanently deletes the invite. This cannot be undone!
+---@return boolean
+---@async
+function Invite:delete() end
+---Create a new Invite
+---@return Invite
+function Invite:__init() end
+
+---Iterable class that wraps a basic Lua table, where order is not guaranteed. Some versions may use a map function to shape the objects before they are accessed.
+---@class TableIterable: Iterable
+---@overload fun():TableIterable
+local TableIterable = {}
 ---Returns an iterator that returns all contained objects. The order of the objects is not guaranteed.
 ---@return async fun()
-function FilteredIterable:iter() end
----Create a new FilteredIterable
----@return FilteredIterable
-function FilteredIterable:__init() end
+function TableIterable:iter() end
+---Create a new TableIterable
+---@return TableIterable
+function TableIterable:__init() end
 
----Represents a text channel in a Discord guild, where guild members and webhooks can send and receive messages.
----@class GuildTextChannel: GuildChannel, TextChannel
----@field public topic string | nil The channel's topic. This should be between 1 and 1024 characters.
----@field public nsfw boolean Whether this channel is marked as NSFW (not safe for work).
----@field public rateLimit number Slowmode rate limit per guild member.
----@field public isNews boolean Whether this channel is a news channel of type 5.
----@field public members FilteredIterable A filtered iterable of guild members that have permission to read this channel. If you want to check whether a specific member has permission to read this channel, it would be better to get the member object elsewhere and use `Member:hasPermission` rather than check whether the member exists here.
----@overload fun():GuildTextChannel
-local GuildTextChannel = {}
----Creates a webhook for this channel. The name must be between 2 and 32 characters in length.
----@param name string
----@return Webhook
+---Represents a single user of Discord, either a human or a bot, outside of any specific guild's context.
+---@class User: Snowflake
+---@field public bot boolean Whether this user is a bot.
+---@field public name string Equivalent to `User.username`.
+---@field public username string The name of the user. This should be between 2 and 32 characters in length.
+---@field public discriminator number The discriminator of the user. This is a 4-digit string that is used to discriminate the user from other users with the same username.
+---@field public tag string The user's username and discriminator concatenated by an `#`.
+---@field public avatar string | nil The hash for the user's custom avatar, if one is set.
+---@field public defaultAvatar number The user's default avatar. See the `defaultAvatar` enumeration for a human-readable representation.
+---@field public avatarURL string Equivalent to the result of calling `User:getAvatarURL()`.
+---@field public defaultAvatarURL string Equivalent to the result of calling `User:getDefaultAvatarURL()`.
+---@field public mentionString string A string that, when included in a message content, may resolve as user notification in the official Discord client.
+---@field public mutualGuilds FilteredIterable A iterable cache of all guilds where this user shares a membership with the current user. The guild must be cached on the current client and the user's member object must be cached in that guild in order for it to appear here.
+---@overload fun():User
+local User = {}
+---Returns a URL that can be used to view the user's full avatar. If provided, the size must be a power of 2 while the extension must be a valid image format. If the user does not have a custom avatar, the default URL is returned.
+---@param size? number
+---@param ext? string
+---@return string
+function User:getAvatarURL(size, ext) end
+---Returns a URL that can be used to view the user's default avatar.
+---@param size? number
+---@return string
+function User:getDefaultAvatarURL(size) end
+---Returns a private channel that can be used to communicate with the user. If the channel is not cached an HTTP request is made to open one.
+---@return PrivateChannel
 ---@async
-function GuildTextChannel:createWebhook(name) end
----Returns a newly constructed cache of all webhook objects for the channel. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
+function User:getPrivateChannel() end
+---Equivalent to `User:getPrivateChannel():send(content)`
+---@param content string | table
+---@return Message
+---@async
+function User:send(content) end
+---Equivalent to `User:getPrivateChannel():sendf(content)`
+---@param content string
+---@return Message
+---@async
+function User:sendf(content) end
+---Create a new User
+---@return User
+function User:__init() end
+
+---Represents a Discord guild member. Though one user may be a member in more than one guild, each presence is represented by a different member object associated with that guild. Note that any method or property that exists for the User class is also available in the Member class.
+---@class Member: UserPresence
+---@field public roles ArrayIterable An iterable array of guild roles that the member has. This does not explicitly include the default everyone role. Object order is not guaranteed.
+---@field public name string If the member has a nickname, then this will be equivalent to that nickname. Otherwise, this is equivalent to `Member.user.username`.
+---@field public nickname string | nil The member's nickname, if one is set.
+---@field public joinedAt string | nil The date and time at which the current member joined the guild, represented as an ISO 8601 string plus microseconds when available. Member objects generated via presence updates lack this property.
+---@field public premiumSince string | nil The date and time at which the current member boosted the guild, represented as an ISO 8601 string plus microseconds when available.
+---@field public voiceChannel GuildVoiceChannel | nil The voice channel to which this member is connected in the current guild.
+---@field public muted boolean Whether the member is voice muted in its guild.
+---@field public deafened boolean Whether the member is voice deafened in its guild.
+---@field public guild Guild The guild in which this member exists.
+---@field public highestRole Role The highest positioned role that the member has. If the member has no explicit roles, then this is equivalent to `Member.guild.defaultRole`.
+---@overload fun():Member
+local Member = {}
+---Returns a color object that represents the member's color as determined by its highest colored role. If the member has no colored roles, then the default color with a value of 0 is returned.
+---@return Color
+function Member:getColor() end
+---Checks whether the member has a specific permission. If `channel` is omitted, then only guild-level permissions are checked. This is a relatively expensive operation. If you need to check multiple permissions at once, use the `getPermissions` method and check the resulting object.
+---@param channel? GuildChannel
+---@param perm Permissions | number
+---@return boolean
+function Member:hasPermission(channel, perm) end
+---Returns a permissions object that represents the member's total permissions for the guild, or for a specific channel if one is provided. If you just need to check one permission, use the `hasPermission` method.
+---@param channel? GuildChannel
+---@return Permissions
+function Member:getPermissions(channel) end
+---Adds a role to the member. If the member already has the role, then no action is taken. Note that the everyone role cannot be explicitly added.
+---@param id Role | string
+---@return boolean
+---@async
+function Member:addRole(id) end
+---Removes a role from the member. If the member does not have the role, then no action is taken. Note that the everyone role cannot be removed.
+---@param id Role | string
+---@return boolean
+---@async
+function Member:removeRole(id) end
+---Checks whether the member has a specific role. This will return true for the guild's default role in addition to any explicitly assigned roles.
+---@param id Role | string
+---@return boolean
+function Member:hasRole(id) end
+---Sets the member's nickname. This must be between 1 and 32 characters in length. Pass `nil` to remove the nickname.
+---@param nick string
+---@return boolean
+---@async
+function Member:setNickname(nick) end
+---Moves the member to a new voice channel, but only if the member has an active voice connection in the current guild. Due to complexities in voice state handling, the member's `voiceChannel` property will update asynchronously via WebSocket; not as a result of the HTTP request.
+---@param id Channel | string
+---@return boolean
+---@async
+function Member:setVoiceChannel(id) end
+---Mutes the member in its guild.
+---@return boolean
+---@async
+function Member:mute() end
+---Unmutes the member in its guild.
+---@return boolean
+---@async
+function Member:unmute() end
+---Deafens the member in its guild.
+---@return boolean
+---@async
+function Member:deafen() end
+---Undeafens the member in its guild.
+---@return boolean
+---@async
+function Member:undeafen() end
+---Equivalent to `Member.guild:kickUser(Member.user, reason)`
+---@param reason string
+---@return boolean
+---@async
+function Member:kick(reason) end
+---Equivalent to `Member.guild:banUser(Member.user, reason, days)`
+---@param reason string
+---@param days number
+---@return boolean
+---@async
+function Member:ban(reason, days) end
+---Equivalent to `Member.guild:unbanUser(Member.user, reason)`
+---@param reason string
+---@return boolean
+---@async
+function Member:unban(reason) end
+---Create a new Member
+---@return Member
+function Member:__init() end
+
+---Used to log formatted messages to stdout (the console) or to a file. The `dateTime` argument should be a format string that is accepted by `os.date`. The file argument should be a relative or absolute file path or `nil` if no log file is desired. See the `logLevel` enumeration for acceptable log level values.
+---@class Logger
+---@overload fun(level: number, dateTime: string, file?: string):Logger
+local Logger = {}
+---If the provided level is less than or equal to the log level set on initialization, this logs a message to stdout as defined by Luvit's `process` module and to a file if one was provided on initialization. The `msg, ...` pair is formatted according to `string.format` and returned if the message is logged.
+---@param level number
+---@param msg string
+---@vararg any
+---@return string
+function Logger:log(level, msg, ...) end
+---Create a new Logger
+---@param level number
+---@param dateTime string
+---@param file? string
+---@return Logger
+function Logger:__init(level, dateTime, file) end
+
+---Defines the base methods and/or properties for classes that represent a user's current presence information. Note that any method or property that exists for the User class is also available in the UserPresence class and its subclasses.
+---@class UserPresence: Container
+---@field public status string The user's overall status (online, dnd, idle, offline).
+---@field public webStatus string The user's web status (online, dnd, idle, offline).
+---@field public mobileStatus string The user's mobile status (online, dnd, idle, offline).
+---@field public desktopStatus string The user's desktop status (online, dnd, idle, offline).
+---@field public user User The user that this presence represents.
+---@field public activity Activity | nil The Activity that this presence represents.
+---@overload fun():UserPresence
+local UserPresence = {}
+---Returns `UserPresence.user.id`
+---@return string
+function UserPresence:__hash() end
+---Create a new UserPresence
+---@return UserPresence
+function UserPresence:__init() end
+
+---Represents a Discord guild (or server). Guilds are a collection of members, channels, and roles that represents one community.
+---@class Guild: Snowflake
+---@field public shardId number The ID of the shard on which this guild is served. If only one shard is in operation, then this will always be 0.
+---@field public name string The guild's name. This should be between 2 and 100 characters in length.
+---@field public icon string | nil The hash for the guild's custom icon, if one is set.
+---@field public iconURL string | nil The URL that can be used to view the guild's icon, if one is set.
+---@field public splash string | nil The hash for the guild's custom splash image, if one is set. Only partnered guilds may have this.
+---@field public splashURL string | nil The URL that can be used to view the guild's custom splash image, if one is set. Only partnered guilds may have this.
+---@field public banner string | nil The hash for the guild's custom banner, if one is set.
+---@field public bannerURL string | nil The URL that can be used to view the guild's banner, if one is set.
+---@field public large boolean Whether the guild has an arbitrarily large amount of members. Guilds that are "large" will not initialize with all members cached.
+---@field public lazy boolean Whether the guild follows rules for the lazy-loading of client data.
+---@field public region string The voice region that is used for all voice connections in the guild.
+---@field public vanityCode string | nil The guild's vanity invite URL code, if one exists.
+---@field public description string | nil The guild's custom description, if one exists.
+---@field public maxMembers number | nil The guild's maximum member count, if available.
+---@field public maxPresences number | nil The guild's maximum presence count, if available.
+---@field public mfaLevel number The guild's multi-factor (or two-factor) verification level setting. A value of 0 indicates that MFA is not required; a value of 1 indicates that MFA is required for administrative actions.
+---@field public joinedAt string The date and time at which the current user joined the guild, represented as an ISO 8601 string plus microseconds when available.
+---@field public afkTimeout number The guild's voice AFK timeout in seconds.
+---@field public unavailable boolean Whether the guild is unavailable. If the guild is unavailable, then no property is guaranteed to exist except for this one and the guild's ID.
+---@field public totalMemberCount number The total number of members that belong to this guild. This should always be greater than or equal to the total number of cached members.
+---@field public verificationLevel number The guild's verification level setting. See the `verificationLevel` enumeration for a human-readable representation.
+---@field public notificationSetting number The guild's default notification setting. See the `notficationSetting` enumeration for a human-readable representation.
+---@field public explicitContentSetting number The guild's explicit content level setting. See the `explicitContentLevel` enumeration for a human-readable representation.
+---@field public premiumTier number The guild's premier tier affected by nitro server boosts. See the `premiumTier` enumeration for a human-readable representation
+---@field public premiumSubscriptionCount number The number of users that have upgraded the guild with nitro server boosting.
+---@field public features table Raw table of VIP features that are enabled for the guild.
+---@field public me Member | nil Equivalent to `Guild.members:get(Guild.client.user.id)`.
+---@field public owner Member | nil Equivalent to `Guild.members:get(Guild.ownerId)`.
+---@field public ownerId string The Snowflake ID of the guild member that owns the guild.
+---@field public afkChannelId string | nil The Snowflake ID of the channel that is used for AFK members, if one is set.
+---@field public afkChannel GuildVoiceChannel | nil Equivalent to `Guild.voiceChannels:get(Guild.afkChannelId)`.
+---@field public systemChannelId string | nil The channel id where Discord's join messages will be displayed.
+---@field public systemChannel GuildTextChannel | nil The channel where Discord's join messages will be displayed.
+---@field public defaultRole Role Equivalent to `Guild.roles:get(Guild.id)`.
+---@field public connection VoiceConnection | nil The VoiceConnection for this guild if one exists.
+---@field public roles Cache An iterable cache of all roles that exist in this guild. This includes the default everyone role.
+---@field public emojis Cache An iterable cache of all emojis that exist in this guild. Note that standard unicode emojis are not found here; only custom emojis.
+---@field public members Cache An iterable cache of all members that exist in this guild and have been already loaded. If the `cacheAllMembers` client option (and the `syncGuilds` option for user-accounts) is enabled on start-up, then all members will be cached. Otherwise, offline members may not be cached. To access a member that may exist, but is not cached, use `Guild:getMember`.
+---@field public textChannels Cache An iterable cache of all text channels that exist in this guild.
+---@field public voiceChannels Cache An iterable cache of all voice channels that exist in this guild.
+---@field public categories Cache An iterable cache of all channel categories that exist in this guild.
+---@overload fun():Guild
+local Guild = {}
+---Asynchronously loads all members for this guild. You do not need to call this if the `cacheAllMembers` client option (and the `syncGuilds` option for user-accounts) is enabled on start-up.
+---@return boolean
+function Guild:requestMembers() end
+---Asynchronously loads certain data and enables the receiving of certain events for this guild. You do not need to call this if the `syncGuilds` client option is enabled on start-up. Note: This is only for user accounts. Bot accounts never need to sync guilds!
+---@return boolean
+function Guild:sync() end
+---Gets a member object by ID. If the object is already cached, then the cached object will be returned; otherwise, an HTTP request is made.
+---@param id User | string
+---@return Member
+---@async
+function Guild:getMember(id) end
+---Gets a role object by ID.
+---@param id Role | string
+---@return Role
+function Guild:getRole(id) end
+---Gets a emoji object by ID.
+---@param id Emoji | string
+---@return Emoji
+function Guild:getEmoji(id) end
+---Gets a text, voice, or category channel object by ID.
+---@param id Channel | string
+---@return GuildChannel
+function Guild:getChannel(id) end
+---Creates a new text channel in this guild. The name must be between 2 and 100 characters in length.
+---@param name string
+---@return GuildTextChannel
+---@async
+function Guild:createTextChannel(name) end
+---Creates a new voice channel in this guild. The name must be between 2 and 100 characters in length.
+---@param name string
+---@return GuildVoiceChannel
+---@async
+function Guild:createVoiceChannel(name) end
+---Creates a channel category in this guild. The name must be between 2 and 100 characters in length.
+---@param name string
+---@return GuildCategoryChannel
+---@async
+function Guild:createCategory(name) end
+---Creates a new role in this guild. The name must be between 1 and 100 characters in length.
+---@param name string
+---@return Role
+---@async
+function Guild:createRole(name) end
+---Creates a new emoji in this guild. The name must be between 2 and 32 characters in length. The image must not be over 256kb, any higher will return a 400 Bad Request
+---@param name string
+---@param image string
+---@return Emoji
+---@async
+function Guild:createEmoji(name, image) end
+---Sets the guilds name. This must be between 2 and 100 characters in length.
+---@param name string
+---@return boolean
+---@async
+function Guild:setName(name) end
+---Sets the guild's voice region (eg: `us-east`). See `listVoiceRegions` for a list of acceptable regions.
+---@param region string
+---@return boolean
+---@async
+function Guild:setRegion(region) end
+---Sets the guild's verification level setting. See the `verificationLevel` enumeration for acceptable values.
+---@param verification_level number
+---@return boolean
+---@async
+function Guild:setVerificationLevel(verification_level) end
+---Sets the guild's default notification setting. See the `notficationSetting` enumeration for acceptable values.
+---@param default_message_notifications number
+---@return boolean
+---@async
+function Guild:setNotificationSetting(default_message_notifications) end
+---Sets the guild's explicit content level setting. See the `explicitContentLevel` enumeration for acceptable values.
+---@param explicit_content_filter number
+---@return boolean
+---@async
+function Guild:setExplicitContentSetting(explicit_content_filter) end
+---Sets the guild's AFK timeout in seconds.
+---@param afk_timeout number
+---@return number
+---@async
+function Guild:setAFKTimeout(afk_timeout) end
+---Sets the guild's AFK channel.
+---@param id Channel | string
+---@return boolean
+---@async
+function Guild:setAFKChannel(id) end
+---Sets the guild's join message channel.
+---@param id Channel | string
+---@return boolean
+---@async
+function Guild:setSystemChannel(id) end
+---Transfers ownership of the guild to another user. Only the current guild owner can do this.
+---@param id User | string
+---@return boolean
+---@async
+function Guild:setOwner(id) end
+---Sets the guild's icon. To remove the icon, pass `nil`.
+---@param icon string
+---@return boolean
+---@async
+function Guild:setIcon(icon) end
+---Sets the guild's banner. To remove the banner, pass `nil`.
+---@param banner string
+---@return boolean
+---@async
+function Guild:setBanner(banner) end
+---Sets the guild's splash. To remove the splash, pass `nil`.
+---@param splash string
+---@return boolean
+---@async
+function Guild:setSplash(splash) end
+---Returns the number of members that would be pruned from the guild if a prune were to be executed.
+---@param days? number
+---@return number
+---@async
+function Guild:getPruneCount(days) end
+---Prunes (removes) inactive, roleless members from the guild who have not been online in the last provided days. If the `count` boolean is provided, the number of pruned members is returned; otherwise, `0` is returned.
+---@param days? number
+---@param count? boolean
+---@return number
+---@async
+function Guild:pruneMembers(days, count) end
+---Returns a newly constructed cache of all ban objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
 ---@return Cache
 ---@async
-function GuildTextChannel:getWebhooks() end
----Bulk deletes multiple messages, from 2 to 100, from the channel. Messages over 2 weeks old cannot be deleted and will return an error.
----@param messages Message[] | string[]
+function Guild:getBans() end
+---This will return a Ban object for a giver user if that user is banned from the guild; otherwise, `nil` is returned.
+---@param id User | string
+---@return Ban
+---@async
+function Guild:getBan(id) end
+---Returns a newly constructed cache of all invite objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
+---@return Cache
+---@async
+function Guild:getInvites() end
+---Returns a newly constructed cache of audit log entry objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects. If included, the query parameters include: query.limit: number, query.user: UserId Resolvable query.before: EntryId Resolvable, query.type: ActionType Resolvable
+---@param query? table
+---@return Cache
+---@async
+function Guild:getAuditLogs(query) end
+---Returns a newly constructed cache of all webhook objects for the guild. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
+---@return Cache
+---@async
+function Guild:getWebhooks() end
+---Returns a raw data table that contains a list of available voice regions for this guild, as provided by Discord, with no additional parsing.
+---@return table
+---@async
+function Guild:listVoiceRegions() end
+---Removes the current user from the guild.
 ---@return boolean
 ---@async
-function GuildTextChannel:bulkDelete(messages) end
----Sets the channel's topic. This must be between 1 and 1024 characters. Pass `nil` to remove the topic.
----@param topic string
+function Guild:leave() end
+---Permanently deletes the guild. The current user must owner the server. This cannot be undone!
 ---@return boolean
 ---@async
-function GuildTextChannel:setTopic(topic) end
----Sets the channel's slowmode rate limit in seconds. This must be between 0 and 120. Passing 0 or `nil` will clear the limit.
----@param limit number
+function Guild:delete() end
+---Kicks a user/member from the guild with an optional reason.
+---@param id User | string
+---@param reason? string
 ---@return boolean
 ---@async
-function GuildTextChannel:setRateLimit(limit) end
----Enables the NSFW setting for the channel. NSFW channels are hidden from users until the user explicitly requests to view them.
+function Guild:kickUser(id, reason) end
+---Bans a user/member from the guild with an optional reason. The `days` parameter is the number of days to consider when purging messages, up to 7.
+---@param id User | string
+---@param reason? string
+---@param days? number
 ---@return boolean
 ---@async
-function GuildTextChannel:enableNSFW() end
----Disables the NSFW setting for the channel. NSFW channels are hidden from users until the user explicitly requests to view them.
+function Guild:banUser(id, reason, days) end
+---Unbans a user/member from the guild with an optional reason.
+---@param id User | string
+---@param reason? string
 ---@return boolean
 ---@async
-function GuildTextChannel:disableNSFW() end
----Create a new GuildTextChannel
----@return GuildTextChannel
-function GuildTextChannel:__init() end
+function Guild:unbanUser(id, reason) end
+---Create a new Guild
+---@return Guild
+function Guild:__init() end
+
+---An implementation of a double-ended queue.
+---@class Deque
+---@overload fun():Deque
+local Deque = {}
+---Returns the total number of values stored.
+---@return number
+function Deque:getCount() end
+---Adds a value of any type to the left side of the deque.
+---@param obj any
+---@return nil
+function Deque:pushLeft(obj) end
+---Adds a value of any type to the right side of the deque.
+---@param obj any
+---@return nil
+function Deque:pushRight(obj) end
+---Removes and returns a value from the left side of the deque.
+---@return any
+function Deque:popLeft() end
+---Removes and returns a value from the right side of the deque.
+---@return any
+function Deque:popRight() end
+---Returns the value at the left side of the deque without removing it.
+---@return any
+function Deque:peekLeft() end
+---Returns the value at the right side of the deque without removing it.
+---@return any
+function Deque:peekRight() end
+---Iterates over the deque from left to right.
+---@return async fun()
+function Deque:iter() end
+---Create a new Deque
+---@return Deque
+function Deque:__init() end
+
+---Defines the base methods and properties for all Discord guild channels.
+---@class GuildChannel: Channel
+---@field public permissionOverwrites Cache An iterable cache of all overwrites that exist in this channel. To access an overwrite that may exist, but is not cached, use `GuildChannel:getPermissionOverwriteFor`.
+---@field public name string The name of the channel. This should be between 2 and 100 characters in length.
+---@field public position number The position of the channel, where 0 is the highest.
+---@field public guild Guild The guild in which this channel exists.
+---@field public category GuildCategoryChannel | nil The parent channel category that may contain this channel.
+---@field public private boolean Whether the "everyone" role has permission to view this channel. In the Discord channel, private text channels are indicated with a lock icon and private voice channels are not visible.
+---@overload fun():GuildChannel
+local GuildChannel = {}
+---Sets the channel's name. This must be between 2 and 100 characters in length.
+---@param name string
+---@return boolean
+---@async
+function GuildChannel:setName(name) end
+---Sets the channel's parent category.
+---@param id Channel | string
+---@return boolean
+---@async
+function GuildChannel:setCategory(id) end
+---Moves a channel up its list. The parameter `n` indicates how many spaces the channel should be moved, clamped to the highest position, with a default of 1 if it is omitted. This will also normalize the positions of all channels.
+---@param n number
+---@return boolean
+---@async
+function GuildChannel:moveUp(n) end
+---Moves a channel down its list. The parameter `n` indicates how many spaces the channel should be moved, clamped to the lowest position, with a default of 1 if it is omitted. This will also normalize the positions of all channels.
+---@param n number
+---@return boolean
+---@async
+function GuildChannel:moveDown(n) end
+---Creates an invite to the channel. Optional payload fields are: max_age: number time in seconds until expiration, default = 86400 (24 hours), max_uses: number total number of uses allowed, default = 0 (unlimited), temporary: boolean whether the invite grants temporary membership, default = false, unique: boolean whether a unique code should be guaranteed, default = false
+---@param payload? table
+---@return Invite
+---@async
+function GuildChannel:createInvite(payload) end
+---Returns a newly constructed cache of all invite objects for the channel. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
+---@return Cache
+---@async
+function GuildChannel:getInvites() end
+---Returns a permission overwrite object corresponding to the provided member or role object. If a cached overwrite is not found, an empty overwrite with zero-permissions is returned instead. Therefore, this can be used to create a new overwrite when one does not exist. Note that the member or role must exist in the same guild as the channel does.
+---@param obj Role | Member
+---@return PermissionOverwrite
+function GuildChannel:getPermissionOverwriteFor(obj) end
+---Permanently deletes the channel. This cannot be undone!
+---@return boolean
+---@async
+function GuildChannel:delete() end
+---Create a new GuildChannel
+---@return GuildChannel
+function GuildChannel:__init() end
+
+---Represents a Discord guild ban. Essentially a combination of the banned user and a reason explaining the ban, if one was provided.
+---@class Ban: Container
+---@field public reason string | nil The reason for the ban, if one was set. This should be from 1 to 512 characters in length.
+---@field public guild Guild The guild in which this ban object exists.
+---@field public user User The user that this ban object represents.
+---@overload fun():Ban
+local Ban = {}
+---Returns `Ban.user.id`
+---@return string
+function Ban:__hash() end
+---Deletes the ban object, unbanning the corresponding user. Equivalent to `Ban.guild:unbanUser(Ban.user)`.
+---@return boolean
+---@async
+function Ban:delete() end
+---Create a new Ban
+---@return Ban
+function Ban:__init() end
+
+---Represents a Discord user's presence data, either plain game or streaming presence or a rich presence. Most if not all properties may be nil.
+---@class Activity
+---@field public start number | nil The Unix timestamp for when this Rich Presence activity was started.
+---@field public stop number | nil The Unix timestamp for when this Rich Presence activity was stopped.
+---@field public name string | nil The game that the user is currently playing.
+---@field public type number | nil The type of user's game status. See the `activityType` enumeration for a human-readable representation.
+---@field public url string | nil The URL that is set for a user's streaming game status.
+---@field public applicationId string | nil The application id controlling this Rich Presence activity.
+---@field public state string | nil string for the Rich Presence state section.
+---@field public details string | nil string for the Rich Presence details section.
+---@field public textSmall string | nil string for the Rich Presence small image text.
+---@field public textLarge string | nil string for the Rich Presence large image text.
+---@field public imageSmall string | nil URL for the Rich Presence small image.
+---@field public imageLarge string | nil URL for the Rich Presence large image.
+---@field public partyId string | nil Party id for this Rich Presence.
+---@field public partySize number | nil Size of the Rich Presence party.
+---@field public partyMax number | nil Max size for the Rich Presence party.
+---@field public emojiId string | nil The ID of the emoji used in this presence if one is set and if it is a custom emoji.
+---@field public emojiName string | nil The name of the emoji used in this presence if one is set and if it has a custom emoji. This will be the raw string for a standard emoji.
+---@field public emojiHash string | nil The discord hash for the emoji used in this presence if one is set. This will be the raw string for a standard emoji.
+---@field public emojiURL string | nil string The URL that can be used to view a full version of the emoji used in this activity if one is set and if it is a custom emoji.
+---@overload fun():Activity
+local Activity = {}
+---Returns `Activity.parent:__hash()`
+---@return string
+function Activity:__hash() end
+---Create a new Activity
+---@return Activity
+function Activity:__init() end
 
 ---Used to measure an elapsed period of time. If a truthy value is passed as an argument, then the stopwatch will initialize in an idle state; otherwise, it will initialize in an active state. Although nanosecond precision is available, Lua can only reliably provide microsecond accuracy due to the lack of native 64-bit integer support. Generally, milliseconds should be sufficient here.
 ---@class Stopwatch
@@ -1066,278 +1238,21 @@ function Stopwatch:getTime() end
 ---@return Stopwatch
 function Stopwatch:__init() end
 
----Defines the base methods and properties for all Discord channel types.
----@class Channel: Snowflake
----@field public type number The channel type. See the `channelType` enumeration for a human-readable representation.
----@field public mentionString string A string that, when included in a message content, may resolve as a link to a channel in the official Discord client.
----@overload fun():Channel
-local Channel = {}
----Create a new Channel
----@return Channel
-function Channel:__init() end
-
----Represents a voice channel in a Discord guild, where guild members can connect and communicate via voice chat.
----@class GuildVoiceChannel: GuildChannel
----@field public bitrate number The channel's bitrate in bits per second (bps). This should be between 8000 and 96000 (or 128000 for partnered servers).
----@field public userLimit number The amount of users allowed to be in this channel. Users with `moveMembers` permission ignore this limit.
----@field public connectedMembers TableIterable An iterable of all users connected to the channel.
----@field public connection VoiceConnection | nil The VoiceConnection for this channel if one exists.
----@overload fun():GuildVoiceChannel
-local GuildVoiceChannel = {}
----Sets the channel's audio bitrate in bits per second (bps). This must be between 8000 and 96000 (or 128000 for partnered servers). If `nil` is passed, the default is set, which is 64000.
----@param bitrate number
+---Defines the base methods and properties for all Discord objects and structures. Container classes are constructed internally with information received from Discord and should never be manually constructed.
+---@class Container
+---@field public client Client A shortcut to the client object to which this container is visible.
+---@field public parent Container | Client The parent object of to which this container is a child. For example, the parent of a role is the guild in which the role exists.
+---@overload fun():Container
+local Container = {}
+---Defines the behavior of the `==` operator. Allows containers to be directly compared according to their type and `__hash` return values.
 ---@return boolean
----@async
-function GuildVoiceChannel:setBitrate(bitrate) end
----Sets the channel's user limit. This must be between 0 and 99 (where 0 is unlimited). If `nil` is passed, the default is set, which is 0.
----@param user_limit number
----@return boolean
----@async
-function GuildVoiceChannel:setUserLimit(user_limit) end
----Join this channel and form a connection to the Voice Gateway.
----@return VoiceConnection
-function GuildVoiceChannel:join() end
----Leave this channel if there is an existing voice connection to it. Equivalent to GuildVoiceChannel.connection:close()
----@return boolean
----@async
-function GuildVoiceChannel:leave() end
----Create a new GuildVoiceChannel
----@return GuildVoiceChannel
-function GuildVoiceChannel:__init() end
-
----Iterable class that holds references to Discordia Class objects in no particular order.
----@class Cache: Iterable
----@overload fun():Cache
-local Cache = {}
----Returns an individual object by key, where the key should match the result of calling `__hash` on the contained objects. Unlike Iterable:get, this method operates with O(1) complexity.
----@param k any
----@return any
-function Cache:get(k) end
----Returns an iterator that returns all contained objects. The order of the objects is not guaranteed.
----@return async fun()
-function Cache:iter() end
----Create a new Cache
----@return Cache
-function Cache:__init() end
-
----Extends the functionality of a regular cache by making use of weak references to the objects that are cached. If all references to an object are weak, as they are here, then the object will be deleted on the next garbage collection cycle.
----@class WeakCache: Cache
----@overload fun():WeakCache
-local WeakCache = {}
----Create a new WeakCache
----@return WeakCache
-function WeakCache:__init() end
-
----Represents a Discord guild role, which is used to assign priority, permissions, and a color to guild members.
----@class Role: Snowflake
----@field public hoisted boolean Whether members with this role should be shown separated from other members in the guild member list.
----@field public mentionable boolean Whether this role can be mentioned in a text channel message.
----@field public managed boolean Whether this role is managed by some integration or bot inclusion.
----@field public name string The name of the role. This should be between 1 and 100 characters in length.
----@field public position number The position of the role, where 0 is the lowest.
----@field public color number Represents the display color of the role as a decimal value.
----@field public permissions number Represents the total permissions of the role as a decimal value.
----@field public mentionString string A string that, when included in a message content, may resolve as a role notification in the official Discord client.
----@field public guild Guild The guild in which this role exists.
----@field public members FilteredIterable A filtered iterable of guild members that have this role. If you want to check whether a specific member has this role, it would be better to get the member object elsewhere and use `Member:hasRole` rather than check whether the member exists here.
----@field public emojis FilteredIterable A filtered iterable of guild emojis that have this role. If you want to check whether a specific emoji has this role, it would be better to get the emoji object elsewhere and use `Emoji:hasRole` rather than check whether the emoji exists here.
----@overload fun():Role
-local Role = {}
----Permanently deletes the role. This cannot be undone!
----@return boolean
----@async
-function Role:delete() end
----Moves a role down its list. The parameter `n` indicates how many spaces the role should be moved, clamped to the lowest position, with a default of 1 if it is omitted. This will also normalize the positions of all roles. Note that the default everyone role cannot be moved.
----@param n number
----@return boolean
----@async
-function Role:moveDown(n) end
----Moves a role up its list. The parameter `n` indicates how many spaces the role should be moved, clamped to the highest position, with a default of 1 if it is omitted. This will also normalize the positions of all roles. Note that the default everyone role cannot be moved.
----@param n number
----@return boolean
----@async
-function Role:moveUp(n) end
----Sets the role's name. The name must be between 1 and 100 characters in length.
----@param name string
----@return boolean
----@async
-function Role:setName(name) end
----Sets the role's display color.
----@param color number | Color
----@return boolean
----@async
-function Role:setColor(color) end
----Sets the permissions that this role explicitly allows.
----@param permissions Permissions | number
----@return boolean
----@async
-function Role:setPermissions(permissions) end
----Causes members with this role to display above unhoisted roles in the member list.
----@return boolean
----@async
-function Role:hoist() end
----Causes member with this role to display amongst other unhoisted members.
----@return boolean
----@async
-function Role:unhoist() end
----Allows anyone to mention this role in text messages.
----@return boolean
----@async
-function Role:enableMentioning() end
----Disallows anyone to mention this role in text messages.
----@return boolean
----@async
-function Role:disableMentioning() end
----Enables individual permissions for this role. This does not necessarily fully allow the permissions.
----@vararg number
----@return boolean
----@async
-function Role:enablePermissions(...) end
----Disables individual permissions for this role. This does not necessarily fully disallow the permissions.
----@vararg number
----@return boolean
----@async
-function Role:disablePermissions(...) end
----Enables all permissions for this role. This does not necessarily fully allow the permissions.
----@return boolean
----@async
-function Role:enableAllPermissions() end
----Disables all permissions for this role. This does not necessarily fully disallow the permissions.
----@return boolean
----@async
-function Role:disableAllPermissions() end
----Returns a color object that represents the role's display color.
----@return Color
-function Role:getColor() end
----Returns a permissions object that represents the permissions that this role has enabled.
----@return Permissions
-function Role:getPermissions() end
----Create a new Role
----@return Role
-function Role:__init() end
-
----Represents a channel category in a Discord guild, used to organize individual text or voice channels in that guild.
----@class GuildCategoryChannel: GuildChannel
----@field public textChannels FilteredIterable Iterable of all textChannels in the Category.
----@field public voiceChannels FilteredIterable Iterable of all voiceChannels in the Category.
----@overload fun():GuildCategoryChannel
-local GuildCategoryChannel = {}
----Creates a new GuildTextChannel with this category as it's parent. Similar to `Guild:createTextChannel(name)`
----@param name string
----@return GuildTextChannel
----@async
-function GuildCategoryChannel:createTextChannel(name) end
----Creates a new GuildVoiceChannel with this category as it's parent. Similar to `Guild:createVoiceChannel(name)`
----@param name string
----@return GuildVoiceChannel
----@async
-function GuildCategoryChannel:createVoiceChannel(name) end
----Create a new GuildCategoryChannel
----@return GuildCategoryChannel
-function GuildCategoryChannel:__init() end
-
----Represents a Discord guild ban. Essentially a combination of the banned user and a reason explaining the ban, if one was provided.
----@class Ban: Container
----@field public reason string | nil The reason for the ban, if one was set. This should be from 1 to 512 characters in length.
----@field public guild Guild The guild in which this ban object exists.
----@field public user User The user that this ban object represents.
----@overload fun():Ban
-local Ban = {}
----Returns `Ban.user.id`
+function Container:__eq() end
+---Defines the behavior of the `tostring` function. All containers follow the format `ClassName: hash`.
 ---@return string
-function Ban:__hash() end
----Deletes the ban object, unbanning the corresponding user. Equivalent to `Ban.guild:unbanUser(Ban.user)`.
----@return boolean
----@async
-function Ban:delete() end
----Create a new Ban
----@return Ban
-function Ban:__init() end
-
----Abstract base class that defines the base methods and properties for a general purpose data structure with features that are better suited for an object-oriented environment. Note: All sub-classes should implement their own `__init` and `iter` methods and all stored objects should have a `__hash` method.
----@class Iterable
----@overload fun():Iterable
-local Iterable = {}
----Defines the behavior of the `pairs` function. Returns an iterator that returns a `key, value` pair, where `key` is the result of calling `__hash` on the `value`.
----@return async fun()
-function Iterable:__pairs() end
----Defines the behavior of the `#` operator. Returns the total number of objects stored in the iterable.
----@return async fun()
-function Iterable:__len() end
----Returns an individual object by key, where the key should match the result of calling `__hash` on the contained objects. Operates with up to O(n) complexity.
----@param k any
----@return any
-function Iterable:get(k) end
----Returns the first object that satisfies a predicate.
----@param fn async fun()
----@return any
-function Iterable:find(fn) end
----Returns an iterator that returns all objects that satisfy a predicate.
----@param fn async fun()
----@return async fun()
-function Iterable:findAll(fn) end
----Iterates through all objects and calls a function `fn` that takes the objects as an argument.
----@param fn async fun()
----@return nil
-function Iterable:forEach(fn) end
----Returns a random object that is contained in the iterable.
----@return any
-function Iterable:random() end
----If a predicate is provided, this returns the number of objects in the iterable that satisfy the predicate; otherwise, the total number of objects.
----@param fn? async fun()
----@return number
-function Iterable:count(fn) end
----Returns a sequentially-indexed table that contains references to all objects. If a `sortBy` string is provided, then the table is sorted by that particular property. If a predicate is provided, then only objects that satisfy it will be included.
----@param sortBy? string
----@param fn? async fun()
----@return table
-function Iterable:toArray(sortBy, fn) end
----Similarly to an SQL query, this returns a sorted Lua table of rows where each row corresponds to each object in the iterable, and each value in the row is selected from the objects according to the keys provided.
----@vararg string
----@return table
-function Iterable:select(...) end
----This returns an iterator that, when called, returns the values from each encountered object, picked by the provided keys. If a key is a string, the objects are indexed with the string. If a key is a function, the function is called with the object passed as its first argument.
----@vararg string | async fun()
----@return async fun()
-function Iterable:pick(...) end
----Create a new Iterable
----@return Iterable
-function Iterable:__init() end
-
----Represents a custom emoji object usable in message content and reactions. Standard unicode emojis do not have a class; they are just strings.
----@class Emoji: Snowflake
----@field public name string The name of the emoji.
----@field public guild Guild The guild in which the emoji exists.
----@field public mentionString string A string that, when included in a message content, may resolve as an emoji image in the official Discord client.
----@field public url string The URL that can be used to view a full version of the emoji.
----@field public managed boolean Whether this emoji is managed by an integration such as Twitch or YouTube.
----@field public requireColons boolean Whether this emoji requires colons to be used in the official Discord client.
----@field public hash string String with the format `name:id`, used in HTTP requests. This is different from `Emoji:__hash`, which returns only the Snowflake ID.
----@field public animated boolean Whether this emoji is animated.
----@field public roles ArrayIterable An iterable array of roles that may be required to use this emoji, generally related to integration-managed emojis. Object order is not guaranteed.
----@overload fun():Emoji
-local Emoji = {}
----Sets the emoji's name. The name must be between 2 and 32 characters in length.
----@param name string
----@return boolean
----@async
-function Emoji:setName(name) end
----Sets the roles that can use the emoji.
----@param roles Role[] | string[]
----@return boolean
----@async
-function Emoji:setRoles(roles) end
----Permanently deletes the emoji. This cannot be undone!
----@return boolean
----@async
-function Emoji:delete() end
----Returns whether or not the provided role is allowed to use the emoji.
----@param id Role | string
----@return boolean
-function Emoji:hasRole(id) end
----Create a new Emoji
----@return Emoji
-function Emoji:__init() end
+function Container:__tostring() end
+---Create a new Container
+---@return Container
+function Container:__init() end
 
 ---Defines the base methods and properties for all Discord text channels.
 ---@class TextChannel: Channel
@@ -1403,226 +1318,6 @@ function TextChannel:sendf(content, ...) end
 ---@return TextChannel
 function TextChannel:__init() end
 
----An implementation of a double-ended queue.
----@class Deque
----@overload fun():Deque
-local Deque = {}
----Returns the total number of values stored.
----@return number
-function Deque:getCount() end
----Adds a value of any type to the left side of the deque.
----@param obj any
----@return nil
-function Deque:pushLeft(obj) end
----Adds a value of any type to the right side of the deque.
----@param obj any
----@return nil
-function Deque:pushRight(obj) end
----Removes and returns a value from the left side of the deque.
----@return any
-function Deque:popLeft() end
----Removes and returns a value from the right side of the deque.
----@return any
-function Deque:popRight() end
----Returns the value at the left side of the deque without removing it.
----@return any
-function Deque:peekLeft() end
----Returns the value at the right side of the deque without removing it.
----@return any
-function Deque:peekRight() end
----Iterates over the deque from left to right.
----@return async fun()
-function Deque:iter() end
----Create a new Deque
----@return Deque
-function Deque:__init() end
-
----Represents an object that is used to allow or deny specific permissions for a role or member in a Discord guild channel.
----@class PermissionOverwrite: Snowflake
----@field public type string The overwrite type; either "role" or "member".
----@field public channel GuildChannel The channel in which this overwrite exists.
----@field public guild Guild The guild in which this overwrite exists. Equivalent to `PermissionOverwrite.channel.guild`.
----@field public allowedPermissions number The number representing the total permissions allowed by this overwrite.
----@field public deniedPermissions number The number representing the total permissions denied by this overwrite.
----@overload fun():PermissionOverwrite
-local PermissionOverwrite = {}
----Deletes the permission overwrite. This can be undone by creating a new version of the same overwrite.
----@return boolean
----@async
-function PermissionOverwrite:delete() end
----Returns the object associated with this overwrite, either a role or member. This may make an HTTP request if the object is not cached.
----@return Role | Member
----@async
-function PermissionOverwrite:getObject() end
----Returns a permissions object that represents the permissions that this overwrite explicitly allows.
----@return Permissions
-function PermissionOverwrite:getAllowedPermissions() end
----Returns a permissions object that represents the permissions that this overwrite explicitly denies.
----@return Permissions
-function PermissionOverwrite:getDeniedPermissions() end
----Sets the permissions that this overwrite explicitly allows and denies. This method does NOT resolve conflicts. Please be sure to use the correct parameters.
----@param allowed Permissions[] | number[]
----@param denied Permissions[] | number[]
----@return boolean
----@async
-function PermissionOverwrite:setPermissions(allowed, denied) end
----Sets the permissions that this overwrite explicitly allows.
----@param allowed Permissions[] | number[]
----@return boolean
----@async
-function PermissionOverwrite:setAllowedPermissions(allowed) end
----Sets the permissions that this overwrite explicitly denies.
----@param denied Permissions[] | number[]
----@return boolean
----@async
-function PermissionOverwrite:setDeniedPermissions(denied) end
----Allows individual permissions in this overwrite.
----@vararg number
----@return boolean
----@async
-function PermissionOverwrite:allowPermissions(...) end
----Denies individual permissions in this overwrite.
----@vararg number
----@return boolean
----@async
-function PermissionOverwrite:denyPermissions(...) end
----Clears individual permissions in this overwrite.
----@vararg number
----@return boolean
----@async
-function PermissionOverwrite:clearPermissions(...) end
----Allows all permissions in this overwrite.
----@return boolean
----@async
-function PermissionOverwrite:allowAllPermissions() end
----Denies all permissions in this overwrite.
----@return boolean
----@async
-function PermissionOverwrite:denyAllPermissions() end
----Clears all permissions in this overwrite.
----@return boolean
----@async
-function PermissionOverwrite:clearAllPermissions() end
----Create a new PermissionOverwrite
----@return PermissionOverwrite
-function PermissionOverwrite:__init() end
-
----Represents a connection to a Discord voice server.
----@class VoiceConnection
----@field public channel GuildVoiceChannel | nil The corresponding GuildVoiceChannel for this connection, if one exists.
----@overload fun():VoiceConnection
-local VoiceConnection = {}
----Returns the bitrate of the interal Opus encoder in bits per second (bps).
----@return nil
-function VoiceConnection:getBitrate() end
----Sets the bitrate of the interal Opus encoder in bits per second (bps). This should be between 8000 and 128000, inclusive.
----@param bitrate number
----@return nil
-function VoiceConnection:setBitrate(bitrate) end
----Returns the complexity of the interal Opus encoder.
----@return number
-function VoiceConnection:getComplexity() end
----Sets the complexity of the interal Opus encoder. This should be between 0 and 10, inclusive.
----@param complexity number
----@return nil
-function VoiceConnection:setComplexity(complexity) end
----Plays PCM data over the established connection. If a duration (in milliseconds) is provided, the audio stream will automatically stop after that time has elapsed; otherwise, it will play until the source is exhausted. The returned number is the time elapsed while streaming and the returned string is a message detailing the reason why the stream stopped. For more information about acceptable sources, see the [[voice]] page.
----@param source string | async fun() | table | userdata
----@param duration? number
----@return number string
-function VoiceConnection:playPCM(source, duration) end
----Plays audio over the established connection using an FFmpeg process, assuming FFmpeg is properly configured. If a duration (in milliseconds) is provided, the audio stream will automatically stop after that time has elapsed; otherwise, it will play until the source is exhausted. The returned number is the time elapsed while streaming and the returned string is a message detailing the reason why the stream stopped. For more information about using FFmpeg, see the [[voice]] page.
----@param path string
----@param duration? number
----@return number string
-function VoiceConnection:playFFmpeg(path, duration) end
----Temporarily pauses the audio stream for this connection, if one is active. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually paused, usually on the next tick.
----@return nil
-function VoiceConnection:pauseStream() end
----Resumes the audio stream for this connection, if one is active and paused. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually resumed, usually on the next tick.
----@return nil
-function VoiceConnection:resumeStream() end
----Irreversibly stops the audio stream for this connection, if one is active. Like most Discordia methods, this must be called inside of a coroutine, as it will yield until the stream is actually stopped, usually on the next tick.
----@return nil
-function VoiceConnection:stopStream() end
----Stops the audio stream for this connection, if one is active, disconnects from the voice server, and leaves the corresponding voice channel. Like most Discordia methods, this must be called inside of a coroutine.
----@return boolean
-function VoiceConnection:close() end
----Create a new VoiceConnection
----@return VoiceConnection
-function VoiceConnection:__init() end
-
----Represents a length of time and provides utilities for converting to and from different formats. Supported units are: weeks, days, hours, minutes, seconds, and milliseconds.
----@class Time
----@overload fun():Time
-local Time = {}
----Returns a human-readable string built from the set of normalized time values that the object represents.
----@return string
-function Time:toString() end
----Returns the total number of weeks that the time object represents.
----@return number
-function Time:toWeeks() end
----Returns the total number of days that the time object represents.
----@return number
-function Time:toDays() end
----Returns the total number of hours that the time object represents.
----@return number
-function Time:toHours() end
----Returns the total number of minutes that the time object represents.
----@return number
-function Time:toMinutes() end
----Returns the total number of seconds that the time object represents.
----@return number
-function Time:toSeconds() end
----Returns the total number of milliseconds that the time object represents.
----@return number
-function Time:toMilliseconds() end
----Returns a table of normalized time values that represent the time object in a more accessible form.
----@return number
-function Time:toTable() end
----Constructs a new Time object from a value interpreted as weeks, where a week is equal to 7 days.
----@param t number
----@return Time
-function Time.fromWeeks(t) end
----Constructs a new Time object from a value interpreted as days, where a day is equal to 24 hours.
----@param t number
----@return Time
-function Time.fromDays(t) end
----Constructs a new Time object from a value interpreted as hours, where an hour is equal to 60 minutes.
----@param t number
----@return Time
-function Time.fromHours(t) end
----Constructs a new Time object from a value interpreted as minutes, where a minute is equal to 60 seconds.
----@param t number
----@return Time
-function Time.fromMinutes(t) end
----Constructs a new Time object from a value interpreted as seconds, where a second is equal to 1000 milliseconds.
----@param t number
----@return Time
-function Time.fromSeconds(t) end
----Constructs a new Time object from a value interpreted as milliseconds, the base unit represented.
----@param t number
----@return Time
-function Time.fromMilliseconds(t) end
----Constructs a new Time object from a table of time values where the keys are defined in the constructors above (eg: `weeks`, `days`, `hours`).
----@param t table
----@return Time
-function Time.fromTable(t) end
----Create a new Time
----@return Time
-function Time:__init() end
-
----Iterable class that wraps a basic Lua table, where order is not guaranteed. Some versions may use a map function to shape the objects before they are accessed.
----@class TableIterable: Iterable
----@overload fun():TableIterable
-local TableIterable = {}
----Returns an iterator that returns all contained objects. The order of the objects is not guaranteed.
----@return async fun()
-function TableIterable:iter() end
----Create a new TableIterable
----@return TableIterable
-function TableIterable:__init() end
-
 ---Mutual exclusion class used to control Lua coroutine execution order.
 ---@class Mutex
 ---@overload fun():Mutex
@@ -1641,92 +1336,6 @@ function Mutex:unlockAfter(delay) end
 ---Create a new Mutex
 ---@return Mutex
 function Mutex:__init() end
-
----Represents an entry made into a guild's audit log.
----@class AuditLogEntry: Snowflake
----@field public changes table | nil A table of audit log change objects. The key represents the property of the changed target and the value contains a table of `new` and possibly `old`, representing the property's new and old value.
----@field public options table | nil A table of optional audit log information.
----@field public actionType number The action type. Use the `actionType `enumeration for a human-readable representation.
----@field public targetId string | nil The Snowflake ID of the affected entity. Will be `nil` for certain targets.
----@field public userId string The Snowflake ID of the user who commited the action.
----@field public reason string | nil The reason provided by the user for the change.
----@field public guild Guild The guild in which this audit log entry was found.
----@overload fun():AuditLogEntry
-local AuditLogEntry = {}
----Returns two tables of the target's properties before the change, and after the change.
----@return table table
-function AuditLogEntry:getBeforeAfter() end
----Gets the target object of the affected entity. The returned object can be: [[Guild]], [[GuildChannel]], [[User]], [[Member]], [[Role]], [[Webhook]], [[Emoji]], nil
----@return any
----@async
-function AuditLogEntry:getTarget() end
----Gets the user who performed the changes.
----@return User
----@async
-function AuditLogEntry:getUser() end
----Gets the member object of the user who performed the changes.
----@return Member | nil
----@async
-function AuditLogEntry:getMember() end
----Create a new AuditLogEntry
----@return AuditLogEntry
-function AuditLogEntry:__init() end
-
----Implements an asynchronous event emitter where callbacks can be subscribed to specific named events. When events are emitted, the callbacks are called in the order that they were originally registered.
----@class Emitter
----@overload fun():Emitter
-local Emitter = {}
----Subscribes a callback to be called every time the named event is emitted. Callbacks registered with this method will automatically be wrapped as a new coroutine when they are called. Returns the original callback for convenience.
----@param name string
----@param fn async fun()
----@return async fun()
-function Emitter:on(name, fn) end
----Subscribes a callback to be called only the first time this event is emitted. Callbacks registered with this method will automatically be wrapped as a new coroutine when they are called. Returns the original callback for convenience.
----@param name string
----@param fn async fun()
----@return async fun()
-function Emitter:once(name, fn) end
----Subscribes a callback to be called every time the named event is emitted. Callbacks registered with this method are not automatically wrapped as a coroutine. Returns the original callback for convenience.
----@param name string
----@param fn async fun()
----@return async fun()
-function Emitter:onSync(name, fn) end
----Subscribes a callback to be called only the first time this event is emitted. Callbacks registered with this method are not automatically wrapped as a coroutine. Returns the original callback for convenience.
----@param name string
----@param fn async fun()
----@return async fun()
-function Emitter:onceSync(name, fn) end
----Emits the named event and a variable number of arguments to pass to the event callbacks.
----@param name string
----@vararg any?
----@return nil
-function Emitter:emit(name, ...) end
----Returns an iterator for all callbacks registered to the named event.
----@param name string
----@return async fun()
-function Emitter:getListeners(name) end
----Returns the number of callbacks registered to the named event.
----@param name string
----@return number
-function Emitter:getListenerCount(name) end
----Unregisters all instances of the callback from the named event.
----@param name string
----@param fn async fun()
----@return nil
-function Emitter:removeListener(name, fn) end
----Unregisters all callbacks for the emitter. If a name is passed, then only callbacks for that specific event are unregistered.
----@param name string | nil
----@return nil
-function Emitter:removeAllListeners(name) end
----When called inside of a coroutine, this will yield the coroutine until the named event is emitted. If a timeout (in milliseconds) is provided, the function will return after the time expires, regardless of whether the event is emitted, and `false` will be returned; otherwise, `true` is returned. If a predicate is provided, events that do not pass the predicate will be ignored.
----@param name string
----@param timeout? number
----@param predicate? async fun()
----@return boolean ...
-function Emitter:waitFor(name, timeout, predicate) end
----Create a new Emitter
----@return Emitter
-function Emitter:__init() end
 
 ---Represents a single moment in time and provides utilities for converting to and from different date and time formats. Although microsecond precision is available, most formats are implemented with only second precision.
 ---@class Date
@@ -1823,74 +1432,93 @@ function Date.fromMicroseconds(us) end
 ---@return Date
 function Date:__init(seconds, microseconds) end
 
----Defines the base methods and properties for all Discord objects and structures. Container classes are constructed internally with information received from Discord and should never be manually constructed.
----@class Container
----@field public client Client A shortcut to the client object to which this container is visible.
----@field public parent Container | Client The parent object of to which this container is a child. For example, the parent of a role is the guild in which the role exists.
----@overload fun():Container
-local Container = {}
----Defines the behavior of the `==` operator. Allows containers to be directly compared according to their type and `__hash` return values.
+---Represents a Discord guild role, which is used to assign priority, permissions, and a color to guild members.
+---@class Role: Snowflake
+---@field public hoisted boolean Whether members with this role should be shown separated from other members in the guild member list.
+---@field public mentionable boolean Whether this role can be mentioned in a text channel message.
+---@field public managed boolean Whether this role is managed by some integration or bot inclusion.
+---@field public name string The name of the role. This should be between 1 and 100 characters in length.
+---@field public position number The position of the role, where 0 is the lowest.
+---@field public color number Represents the display color of the role as a decimal value.
+---@field public permissions number Represents the total permissions of the role as a decimal value.
+---@field public mentionString string A string that, when included in a message content, may resolve as a role notification in the official Discord client.
+---@field public guild Guild The guild in which this role exists.
+---@field public members FilteredIterable A filtered iterable of guild members that have this role. If you want to check whether a specific member has this role, it would be better to get the member object elsewhere and use `Member:hasRole` rather than check whether the member exists here.
+---@field public emojis FilteredIterable A filtered iterable of guild emojis that have this role. If you want to check whether a specific emoji has this role, it would be better to get the emoji object elsewhere and use `Emoji:hasRole` rather than check whether the emoji exists here.
+---@overload fun():Role
+local Role = {}
+---Permanently deletes the role. This cannot be undone!
 ---@return boolean
-function Container:__eq() end
----Defines the behavior of the `tostring` function. All containers follow the format `ClassName: hash`.
----@return string
-function Container:__tostring() end
----Create a new Container
----@return Container
-function Container:__init() end
-
----Used to periodically execute code according to the ticking of the system clock instead of an arbitrary interval.
----@class Clock: Emitter
----@overload fun():Clock
-local Clock = {}
----Starts the main loop for the clock. If a truthy argument is passed, then UTC time is used; otherwise, local time is used. As the clock ticks, an event is emitted for every `os.date` value change. The event name is the key of the value that changed and the event argument is the corresponding date table.
----@param utc? boolean
----@return nil
-function Clock:start(utc) end
----Stops the main loop for the clock.
----@return nil
-function Clock:stop() end
----Create a new Clock
----@return Clock
-function Clock:__init() end
-
----Represents a Discord group channel. Essentially a private channel that may have more than one and up to ten recipients. This class should only be relevant to user-accounts; bots cannot normally join group channels.
----@class GroupChannel: TextChannel
----@field public recipients SecondaryCache A secondary cache of users that are present in the channel.
----@field public name string The name of the channel.
----@field public ownerId string The Snowflake ID of the user that owns (created) the channel.
----@field public owner User | nil Equivalent to `GroupChannel.recipients:get(GroupChannel.ownerId)`.
----@field public icon string | nil The hash for the channel's custom icon, if one is set.
----@field public iconURL string | nil The URL that can be used to view the channel's icon, if one is set.
----@overload fun():GroupChannel
-local GroupChannel = {}
----Sets the channel's name. This must be between 1 and 100 characters in length.
+---@async
+function Role:delete() end
+---Moves a role down its list. The parameter `n` indicates how many spaces the role should be moved, clamped to the lowest position, with a default of 1 if it is omitted. This will also normalize the positions of all roles. Note that the default everyone role cannot be moved.
+---@param n number
+---@return boolean
+---@async
+function Role:moveDown(n) end
+---Moves a role up its list. The parameter `n` indicates how many spaces the role should be moved, clamped to the highest position, with a default of 1 if it is omitted. This will also normalize the positions of all roles. Note that the default everyone role cannot be moved.
+---@param n number
+---@return boolean
+---@async
+function Role:moveUp(n) end
+---Sets the role's name. The name must be between 1 and 100 characters in length.
 ---@param name string
 ---@return boolean
 ---@async
-function GroupChannel:setName(name) end
----Sets the channel's icon. To remove the icon, pass `nil`.
----@param icon string
+function Role:setName(name) end
+---Sets the role's display color.
+---@param color number | Color
 ---@return boolean
 ---@async
-function GroupChannel:setIcon(icon) end
----Adds a user to the channel.
----@param id User | string
+function Role:setColor(color) end
+---Sets the permissions that this role explicitly allows.
+---@param permissions Permissions | number
 ---@return boolean
 ---@async
-function GroupChannel:addRecipient(id) end
----Removes a user from the channel.
----@param id User | string
+function Role:setPermissions(permissions) end
+---Causes members with this role to display above unhoisted roles in the member list.
 ---@return boolean
 ---@async
-function GroupChannel:removeRecipient(id) end
----Removes the client's user from the channel. If no users remain, the channel is destroyed.
+function Role:hoist() end
+---Causes member with this role to display amongst other unhoisted members.
 ---@return boolean
 ---@async
-function GroupChannel:leave() end
----Create a new GroupChannel
----@return GroupChannel
-function GroupChannel:__init() end
+function Role:unhoist() end
+---Allows anyone to mention this role in text messages.
+---@return boolean
+---@async
+function Role:enableMentioning() end
+---Disallows anyone to mention this role in text messages.
+---@return boolean
+---@async
+function Role:disableMentioning() end
+---Enables individual permissions for this role. This does not necessarily fully allow the permissions.
+---@vararg number
+---@return boolean
+---@async
+function Role:enablePermissions(...) end
+---Disables individual permissions for this role. This does not necessarily fully disallow the permissions.
+---@vararg number
+---@return boolean
+---@async
+function Role:disablePermissions(...) end
+---Enables all permissions for this role. This does not necessarily fully allow the permissions.
+---@return boolean
+---@async
+function Role:enableAllPermissions() end
+---Disables all permissions for this role. This does not necessarily fully disallow the permissions.
+---@return boolean
+---@async
+function Role:disableAllPermissions() end
+---Returns a color object that represents the role's display color.
+---@return Color
+function Role:getColor() end
+---Returns a permissions object that represents the permissions that this role has enabled.
+---@return Permissions
+function Role:getPermissions() end
+---Create a new Role
+---@return Role
+function Role:__init() end
 
 ---Wrapper for 24-bit colors packed as a decimal value. See the static constructors for more information.
 ---@class Color
@@ -1951,22 +1579,258 @@ function Color.fromHSL(h, s, l) end
 ---@return Color
 function Color:__init(value) end
 
----Used to log formatted messages to stdout (the console) or to a file. The `dateTime` argument should be a format string that is accepted by `os.date`. The file argument should be a relative or absolute file path or `nil` if no log file is desired. See the `logLevel` enumeration for acceptable log level values.
----@class Logger
----@overload fun(level: number, dateTime: string, file?: string):Logger
-local Logger = {}
----If the provided level is less than or equal to the log level set on initialization, this logs a message to stdout as defined by Luvit's `process` module and to a file if one was provided on initialization. The `msg, ...` pair is formatted according to `string.format` and returned if the message is logged.
----@param level number
----@param msg string
----@vararg any
+---Iterable class that contains objects in a constant, ordered fashion, although the order may change if the internal array is modified. Some versions may use a map function to shape the objects before they are accessed.
+---@class ArrayIterable: Iterable
+---@field public first any The first object in the array
+---@field public last any The last object in the array
+---@overload fun():ArrayIterable
+local ArrayIterable = {}
+---Returns an iterator for all contained objects in a consistent order.
+---@return async fun()
+function ArrayIterable:iter() end
+---Create a new ArrayIterable
+---@return ArrayIterable
+function ArrayIterable:__init() end
+
+---Extends the functionality of a regular cache by making use of weak references to the objects that are cached. If all references to an object are weak, as they are here, then the object will be deleted on the next garbage collection cycle.
+---@class WeakCache: Cache
+---@overload fun():WeakCache
+local WeakCache = {}
+---Create a new WeakCache
+---@return WeakCache
+function WeakCache:__init() end
+
+---Represents a text channel in a Discord guild, where guild members and webhooks can send and receive messages.
+---@class GuildTextChannel: GuildChannel, TextChannel
+---@field public topic string | nil The channel's topic. This should be between 1 and 1024 characters.
+---@field public nsfw boolean Whether this channel is marked as NSFW (not safe for work).
+---@field public rateLimit number Slowmode rate limit per guild member.
+---@field public isNews boolean Whether this channel is a news channel of type 5.
+---@field public members FilteredIterable A filtered iterable of guild members that have permission to read this channel. If you want to check whether a specific member has permission to read this channel, it would be better to get the member object elsewhere and use `Member:hasPermission` rather than check whether the member exists here.
+---@overload fun():GuildTextChannel
+local GuildTextChannel = {}
+---Creates a webhook for this channel. The name must be between 2 and 32 characters in length.
+---@param name string
+---@return Webhook
+---@async
+function GuildTextChannel:createWebhook(name) end
+---Returns a newly constructed cache of all webhook objects for the channel. The cache and its objects are not automatically updated via gateway events. You must call this method again to get the updated objects.
+---@return Cache
+---@async
+function GuildTextChannel:getWebhooks() end
+---Bulk deletes multiple messages, from 2 to 100, from the channel. Messages over 2 weeks old cannot be deleted and will return an error.
+---@param messages Message[] | string[]
+---@return boolean
+---@async
+function GuildTextChannel:bulkDelete(messages) end
+---Sets the channel's topic. This must be between 1 and 1024 characters. Pass `nil` to remove the topic.
+---@param topic string
+---@return boolean
+---@async
+function GuildTextChannel:setTopic(topic) end
+---Sets the channel's slowmode rate limit in seconds. This must be between 0 and 120. Passing 0 or `nil` will clear the limit.
+---@param limit number
+---@return boolean
+---@async
+function GuildTextChannel:setRateLimit(limit) end
+---Enables the NSFW setting for the channel. NSFW channels are hidden from users until the user explicitly requests to view them.
+---@return boolean
+---@async
+function GuildTextChannel:enableNSFW() end
+---Disables the NSFW setting for the channel. NSFW channels are hidden from users until the user explicitly requests to view them.
+---@return boolean
+---@async
+function GuildTextChannel:disableNSFW() end
+---Create a new GuildTextChannel
+---@return GuildTextChannel
+function GuildTextChannel:__init() end
+
+---Wrapper for a bitfield that is more specifically used to represent Discord permissions. See the `permission` enumeration for acceptable permission values.
+---@class Permissions
+---@field public value number The raw decimal value that represents the permissions value.
+---@overload fun():Permissions
+local Permissions = {}
+---Defines the behavior of the `tostring` function. Returns a readable list of permissions stored for convenience of introspection.
 ---@return string
-function Logger:log(level, msg, ...) end
----Create a new Logger
----@param level number
----@param dateTime string
----@param file? string
----@return Logger
-function Logger:__init(level, dateTime, file) end
+function Permissions:__tostring() end
+---Defines the behavior of the `==` operator. Allows permissions to be directly compared according to their value.
+---@return boolean
+function Permissions:__eq() end
+---Enables a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
+---@vararg number
+---@return nil
+function Permissions:enable(...) end
+---Disables a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
+---@vararg number
+---@return nil
+function Permissions:disable(...) end
+---Returns whether this set has a specific permission or permissions. See the `permission` enumeration for acceptable permission values.
+---@vararg number
+---@return boolean
+function Permissions:has(...) end
+---Enables all permissions values.
+---@return nil
+function Permissions:enableAll() end
+---Disables all permissions values.
+---@return nil
+function Permissions:disableAll() end
+---Returns the hexadecimal string that represents the permissions value.
+---@return string
+function Permissions:toHex() end
+---Returns a table that represents the permissions value, where the keys are the permission names and the values are `true` or `false`.
+---@return table
+function Permissions:toTable() end
+---Returns an array of the names of the permissions that this object represents.
+---@return table
+function Permissions:toArray() end
+---Returns a new Permissions object that contains the permissions that are in either `self` or `other` (bitwise OR).
+---@param other Permissions
+---@return Permissions
+function Permissions:union(other) end
+---Returns a new Permissions object that contains the permissions that are in both `self` and `other` (bitwise AND).
+---@param other Permissions
+---@return Permissions
+function Permissions:intersection(other) end
+---Returns a new Permissions object that contains the permissions that are not in `self` or `other` (bitwise XOR).
+---@param other Permissions
+---@return Permissions
+function Permissions:difference(other) end
+---Returns a new Permissions object that contains the permissions that are not in `self`, but are in `other` (or the set of all permissions if omitted).
+---@param other Permissions
+---@return Permissions
+function Permissions:complement(other) end
+---Returns a new copy of the original permissions object.
+---@return Permissions
+function Permissions:copy() end
+---Returns a Permissions object with all of the defined permissions.
+---@vararg number
+---@return Permissions
+function Permissions.fromMany(...) end
+---Returns a Permissions object with all permissions.
+---@return Permissions
+function Permissions.all() end
+---Create a new Permissions
+---@return Permissions
+function Permissions:__init() end
+
+---Represents a custom emoji object usable in message content and reactions. Standard unicode emojis do not have a class; they are just strings.
+---@class Emoji: Snowflake
+---@field public name string The name of the emoji.
+---@field public guild Guild The guild in which the emoji exists.
+---@field public mentionString string A string that, when included in a message content, may resolve as an emoji image in the official Discord client.
+---@field public url string The URL that can be used to view a full version of the emoji.
+---@field public managed boolean Whether this emoji is managed by an integration such as Twitch or YouTube.
+---@field public requireColons boolean Whether this emoji requires colons to be used in the official Discord client.
+---@field public hash string String with the format `name:id`, used in HTTP requests. This is different from `Emoji:__hash`, which returns only the Snowflake ID.
+---@field public animated boolean Whether this emoji is animated.
+---@field public roles ArrayIterable An iterable array of roles that may be required to use this emoji, generally related to integration-managed emojis. Object order is not guaranteed.
+---@overload fun():Emoji
+local Emoji = {}
+---Sets the emoji's name. The name must be between 2 and 32 characters in length.
+---@param name string
+---@return boolean
+---@async
+function Emoji:setName(name) end
+---Sets the roles that can use the emoji.
+---@param roles Role[] | string[]
+---@return boolean
+---@async
+function Emoji:setRoles(roles) end
+---Permanently deletes the emoji. This cannot be undone!
+---@return boolean
+---@async
+function Emoji:delete() end
+---Returns whether or not the provided role is allowed to use the emoji.
+---@param id Role | string
+---@return boolean
+function Emoji:hasRole(id) end
+---Create a new Emoji
+---@return Emoji
+function Emoji:__init() end
+
+---Represents an object that is used to allow or deny specific permissions for a role or member in a Discord guild channel.
+---@class PermissionOverwrite: Snowflake
+---@field public type string The overwrite type; either "role" or "member".
+---@field public channel GuildChannel The channel in which this overwrite exists.
+---@field public guild Guild The guild in which this overwrite exists. Equivalent to `PermissionOverwrite.channel.guild`.
+---@field public allowedPermissions number The number representing the total permissions allowed by this overwrite.
+---@field public deniedPermissions number The number representing the total permissions denied by this overwrite.
+---@overload fun():PermissionOverwrite
+local PermissionOverwrite = {}
+---Deletes the permission overwrite. This can be undone by creating a new version of the same overwrite.
+---@return boolean
+---@async
+function PermissionOverwrite:delete() end
+---Returns the object associated with this overwrite, either a role or member. This may make an HTTP request if the object is not cached.
+---@return Role | Member
+---@async
+function PermissionOverwrite:getObject() end
+---Returns a permissions object that represents the permissions that this overwrite explicitly allows.
+---@return Permissions
+function PermissionOverwrite:getAllowedPermissions() end
+---Returns a permissions object that represents the permissions that this overwrite explicitly denies.
+---@return Permissions
+function PermissionOverwrite:getDeniedPermissions() end
+---Sets the permissions that this overwrite explicitly allows and denies. This method does NOT resolve conflicts. Please be sure to use the correct parameters.
+---@param allowed Permissions[] | number[]
+---@param denied Permissions[] | number[]
+---@return boolean
+---@async
+function PermissionOverwrite:setPermissions(allowed, denied) end
+---Sets the permissions that this overwrite explicitly allows.
+---@param allowed Permissions[] | number[]
+---@return boolean
+---@async
+function PermissionOverwrite:setAllowedPermissions(allowed) end
+---Sets the permissions that this overwrite explicitly denies.
+---@param denied Permissions[] | number[]
+---@return boolean
+---@async
+function PermissionOverwrite:setDeniedPermissions(denied) end
+---Allows individual permissions in this overwrite.
+---@vararg number
+---@return boolean
+---@async
+function PermissionOverwrite:allowPermissions(...) end
+---Denies individual permissions in this overwrite.
+---@vararg number
+---@return boolean
+---@async
+function PermissionOverwrite:denyPermissions(...) end
+---Clears individual permissions in this overwrite.
+---@vararg number
+---@return boolean
+---@async
+function PermissionOverwrite:clearPermissions(...) end
+---Allows all permissions in this overwrite.
+---@return boolean
+---@async
+function PermissionOverwrite:allowAllPermissions() end
+---Denies all permissions in this overwrite.
+---@return boolean
+---@async
+function PermissionOverwrite:denyAllPermissions() end
+---Clears all permissions in this overwrite.
+---@return boolean
+---@async
+function PermissionOverwrite:clearAllPermissions() end
+---Create a new PermissionOverwrite
+---@return PermissionOverwrite
+function PermissionOverwrite:__init() end
+
+---Represents a private Discord text channel used to track correspondences between the current user and one other recipient.
+---@class PrivateChannel: TextChannel
+---@field public name string Equivalent to `PrivateChannel.recipient.username`.
+---@field public recipient User The recipient of this channel's messages, other than the current user.
+---@overload fun():PrivateChannel
+local PrivateChannel = {}
+---Closes the channel. This does not delete the channel. To re-open the channel, use `User:getPrivateChannel`.
+---@return boolean
+---@async
+function PrivateChannel:close() end
+---Create a new PrivateChannel
+---@return PrivateChannel
+function PrivateChannel:__init() end
 
 ---Represents a relationship between the current user and another Discord user. This is generally either a friend or a blocked user. This class should only be relevant to user-accounts; bots cannot normally have relationships.
 ---@class Relationship: UserPresence
@@ -1977,6 +1841,179 @@ local Relationship = {}
 ---Create a new Relationship
 ---@return Relationship
 function Relationship:__init() end
+
+---Represents a text message sent in a Discord text channel. Messages can contain simple content strings, rich embeds, attachments, or reactions.
+---@class Message: Snowflake
+---@field public reactions Cache An iterable cache of all reactions that exist for this message.
+---@field public mentionedUsers ArrayIterable An iterable array of all users that are mentioned in this message.
+---@field public mentionedRoles ArrayIterable An iterable array of known roles that are mentioned in this message, excluding the default everyone role. The message must be in a guild text channel and the roles must be cached in that channel's guild for them to appear here.
+---@field public mentionedEmojis ArrayIterable An iterable array of all known emojis that are mentioned in this message. If the client does not have the emoji cached, then it will not appear here.
+---@field public mentionedChannels ArrayIterable An iterable array of all known channels that are mentioned in this message. If the client does not have the channel cached, then it will not appear here.
+---@field public cleanContent string The message content with all recognized mentions replaced by names and with @everyone and @here mentions escaped by a zero-width space (ZWSP).
+---@field public mentionsEveryone boolean Whether this message mentions @everyone or @here.
+---@field public pinned boolean Whether this message belongs to its channel's pinned messages.
+---@field public tts boolean Whether this message is a text-to-speech message.
+---@field public nonce string | number | boolean | nil Used by the official Discord client to detect the success of a sent message.
+---@field public editedTimestamp string | nil The date and time at which the message was most recently edited, represented as an ISO 8601 string plus microseconds when available.
+---@field public oldContent string | table Yields a table containing keys as timestamps and value as content of the message at that time.
+---@field public content string The raw message content. This should be between 0 and 2000 characters in length.
+---@field public author User The object of the user that created the message.
+---@field public channel TextChannel The channel in which this message was sent.
+---@field public type number The message type. Use the `messageType` enumeration for a human-readable representation.
+---@field public embed table | nil A raw data table that represents the first rich embed that exists in this message. See the Discord documentation for more information.
+---@field public attachment table | nil A raw data table that represents the first file attachment that exists in this message. See the Discord documentation for more information.
+---@field public embeds table A raw data table that contains all embeds that exist for this message. If there are none, this table will not be present.
+---@field public attachments table A raw data table that contains all attachments that exist for this message. If there are none, this table will not be present.
+---@field public guild Guild | nil The guild in which this message was sent. This will not exist if the message was not sent in a guild text channel. Equivalent to `Message.channel.guild`.
+---@field public member Member | nil The member object of the message's author. This will not exist if the message is not sent in a guild text channel or if the member object is not cached. Equivalent to `Message.guild.members:get(Message.author.id)`.
+---@field public referencedMessage Message | nil If available, the previous message that this current message references as seen in replies.
+---@field public link string URL that can be used to jump-to the message in the Discord client.
+---@field public webhookId string | nil The ID of the webhook that generated this message, if applicable.
+---@overload fun():Message
+local Message = {}
+---Sets the message's content. The message must be authored by the current user (ie: you cannot change the content of messages sent by other users). The content must be from 1 to 2000 characters in length.
+---@param content string
+---@return boolean
+---@async
+function Message:setContent(content) end
+---Sets the message's embed. The message must be authored by the current user. (ie: you cannot change the embed of messages sent by other users).
+---@param embed table
+---@return boolean
+---@async
+function Message:setEmbed(embed) end
+---Hides all embeds for this message.
+---@return boolean
+---@async
+function Message:hideEmbeds() end
+---Shows all embeds for this message.
+---@return boolean
+---@async
+function Message:showEmbeds() end
+---Indicates whether the message has a particular flag set.
+---@param flag number
+---@return boolean
+function Message:hasFlag(flag) end
+---Sets multiple properties of the message at the same time using a table similar to the one supported by `TextChannel.send`, except only `content` and `embed` are valid fields; `mention(s)`, `file(s)`, etc are not supported. The message must be authored by the current user. (ie: you cannot change the embed of messages sent by other users).
+---@param data table
+---@return boolean
+---@async
+function Message:update(data) end
+---Pins the message in the channel.
+---@return boolean
+---@async
+function Message:pin() end
+---Unpins the message in the channel.
+---@return boolean
+---@async
+function Message:unpin() end
+---Adds a reaction to the message. Note that this does not return the new reaction object; wait for the `reactionAdd` event instead.
+---@param emoji Emoji | Reaction | string
+---@return boolean
+---@async
+function Message:addReaction(emoji) end
+---Removes a reaction from the message. Note that this does not return the old reaction object; wait for the `reactionRemove` event instead. If no user is indicated, then this will remove the current user's reaction.
+---@param emoji Emoji | Reaction | string
+---@param id? User | string
+---@return boolean
+---@async
+function Message:removeReaction(emoji, id) end
+---Removes all reactions from the message.
+---@return boolean
+---@async
+function Message:clearReactions() end
+---Permanently deletes the message. This cannot be undone!
+---@return boolean
+---@async
+function Message:delete() end
+---Equivalent to `Message.channel:send(content)`.
+---@param content string | table
+---@return Message
+---@async
+function Message:reply(content) end
+---Create a new Message
+---@return Message
+function Message:__init() end
+
+---Represents a handle used to send webhook messages to a guild text channel in a one-way fashion. This class defines methods and properties for managing the webhook, not for sending messages.
+---@class Webhook: Snowflake
+---@field public guildId string The ID of the guild in which this webhook exists.
+---@field public channelId string The ID of the channel in which this webhook exists.
+---@field public user User | nil The user that created this webhook.
+---@field public token string The token that can be used to access this webhook.
+---@field public name string The name of the webhook. This should be between 2 and 32 characters in length.
+---@field public type number The type of the webhook. See the `webhookType` enum for a human-readable representation.
+---@field public avatar string | nil The hash for the webhook's custom avatar, if one is set.
+---@field public avatarURL string Equivalent to the result of calling `Webhook:getAvatarURL()`.
+---@field public defaultAvatar number The default avatar for the webhook. See the `defaultAvatar` enumeration for a human-readable representation. This should always be `defaultAvatar.blurple`.
+---@field public defaultAvatarURL string Equivalent to the result of calling `Webhook:getDefaultAvatarURL()`.
+---@overload fun():Webhook
+local Webhook = {}
+---Returns a URL that can be used to view the webhooks's full avatar. If provided, the size must be a power of 2 while the extension must be a valid image format. If the webhook does not have a custom avatar, the default URL is returned.
+---@param size? number
+---@param ext? string
+---@return string
+function Webhook:getAvatarURL(size, ext) end
+---Returns a URL that can be used to view the webhooks's default avatar.
+---@param size? number
+---@return string
+function Webhook:getDefaultAvatarURL(size) end
+---Sets the webhook's name. This must be between 2 and 32 characters in length.
+---@param name string
+---@return boolean
+---@async
+function Webhook:setName(name) end
+---Sets the webhook's avatar. If `nil` is passed, the avatar is removed.
+---@param avatar string
+---@return boolean
+---@async
+function Webhook:setAvatar(avatar) end
+---Permanently deletes the webhook. This cannot be undone!
+---@return boolean
+---@async
+function Webhook:delete() end
+---Create a new Webhook
+---@return Webhook
+function Webhook:__init() end
+
+---Defines the base methods and properties for all Discord channel types.
+---@class Channel: Snowflake
+---@field public type number The channel type. See the `channelType` enumeration for a human-readable representation.
+---@field public mentionString string A string that, when included in a message content, may resolve as a link to a channel in the official Discord client.
+---@overload fun():Channel
+local Channel = {}
+---Create a new Channel
+---@return Channel
+function Channel:__init() end
+
+---Represents an entry made into a guild's audit log.
+---@class AuditLogEntry: Snowflake
+---@field public changes table | nil A table of audit log change objects. The key represents the property of the changed target and the value contains a table of `new` and possibly `old`, representing the property's new and old value.
+---@field public options table | nil A table of optional audit log information.
+---@field public actionType number The action type. Use the `actionType `enumeration for a human-readable representation.
+---@field public targetId string | nil The Snowflake ID of the affected entity. Will be `nil` for certain targets.
+---@field public userId string The Snowflake ID of the user who commited the action.
+---@field public reason string | nil The reason provided by the user for the change.
+---@field public guild Guild The guild in which this audit log entry was found.
+---@overload fun():AuditLogEntry
+local AuditLogEntry = {}
+---Returns two tables of the target's properties before the change, and after the change.
+---@return table table
+function AuditLogEntry:getBeforeAfter() end
+---Gets the target object of the affected entity. The returned object can be: [[Guild]], [[GuildChannel]], [[User]], [[Member]], [[Role]], [[Webhook]], [[Emoji]], nil
+---@return any
+---@async
+function AuditLogEntry:getTarget() end
+---Gets the user who performed the changes.
+---@return User
+---@async
+function AuditLogEntry:getUser() end
+---Gets the member object of the user who performed the changes.
+---@return Member | nil
+---@async
+function AuditLogEntry:getMember() end
+---Create a new AuditLogEntry
+---@return AuditLogEntry
+function AuditLogEntry:__init() end
 
 ---Defines the base methods and/or properties for all Discord objects that have a Snowflake ID.
 ---@class Snowflake: Container
@@ -1995,77 +2032,31 @@ function Snowflake:getDate() end
 ---@return Snowflake
 function Snowflake:__init() end
 
----Represents a single user of Discord, either a human or a bot, outside of any specific guild's context.
----@class User: Snowflake
----@field public bot boolean Whether this user is a bot.
----@field public name string Equivalent to `User.username`.
----@field public username string The name of the user. This should be between 2 and 32 characters in length.
----@field public discriminator number The discriminator of the user. This is a 4-digit string that is used to discriminate the user from other users with the same username.
----@field public tag string The user's username and discriminator concatenated by an `#`.
----@field public avatar string | nil The hash for the user's custom avatar, if one is set.
----@field public defaultAvatar number The user's default avatar. See the `defaultAvatar` enumeration for a human-readable representation.
----@field public avatarURL string Equivalent to the result of calling `User:getAvatarURL()`.
----@field public defaultAvatarURL string Equivalent to the result of calling `User:getDefaultAvatarURL()`.
----@field public mentionString string A string that, when included in a message content, may resolve as user notification in the official Discord client.
----@field public mutualGuilds FilteredIterable A iterable cache of all guilds where this user shares a membership with the current user. The guild must be cached on the current client and the user's member object must be cached in that guild in order for it to appear here.
----@overload fun():User
-local User = {}
----Returns a URL that can be used to view the user's full avatar. If provided, the size must be a power of 2 while the extension must be a valid image format. If the user does not have a custom avatar, the default URL is returned.
----@param size? number
----@param ext? string
----@return string
-function User:getAvatarURL(size, ext) end
----Returns a URL that can be used to view the user's default avatar.
----@param size? number
----@return string
-function User:getDefaultAvatarURL(size) end
----Returns a private channel that can be used to communicate with the user. If the channel is not cached an HTTP request is made to open one.
----@return PrivateChannel
----@async
-function User:getPrivateChannel() end
----Equivalent to `User:getPrivateChannel():send(content)`
----@param content string | table
----@return Message
----@async
-function User:send(content) end
----Equivalent to `User:getPrivateChannel():sendf(content)`
----@param content string
----@return Message
----@async
-function User:sendf(content) end
----Create a new User
----@return User
-function User:__init() end
+---Used to periodically execute code according to the ticking of the system clock instead of an arbitrary interval.
+---@class Clock: Emitter
+---@overload fun():Clock
+local Clock = {}
+---Starts the main loop for the clock. If a truthy argument is passed, then UTC time is used; otherwise, local time is used. As the clock ticks, an event is emitted for every `os.date` value change. The event name is the key of the value that changed and the event argument is the corresponding date table.
+---@param utc? boolean
+---@return nil
+function Clock:start(utc) end
+---Stops the main loop for the clock.
+---@return nil
+function Clock:stop() end
+---Create a new Clock
+---@return Clock
+function Clock:__init() end
 
----Defines the base methods and/or properties for classes that represent a user's current presence information. Note that any method or property that exists for the User class is also available in the UserPresence class and its subclasses.
----@class UserPresence: Container
----@field public status string The user's overall status (online, dnd, idle, offline).
----@field public webStatus string The user's web status (online, dnd, idle, offline).
----@field public mobileStatus string The user's mobile status (online, dnd, idle, offline).
----@field public desktopStatus string The user's desktop status (online, dnd, idle, offline).
----@field public user User The user that this presence represents.
----@field public activity Activity | nil The Activity that this presence represents.
----@overload fun():UserPresence
-local UserPresence = {}
----Returns `UserPresence.user.id`
----@return string
-function UserPresence:__hash() end
----Create a new UserPresence
----@return UserPresence
-function UserPresence:__init() end
-
----Iterable class that contains objects in a constant, ordered fashion, although the order may change if the internal array is modified. Some versions may use a map function to shape the objects before they are accessed.
----@class ArrayIterable: Iterable
----@field public first any The first object in the array
----@field public last any The last object in the array
----@overload fun():ArrayIterable
-local ArrayIterable = {}
----Returns an iterator for all contained objects in a consistent order.
+---Iterable class that wraps another iterable and serves a subset of the objects that the original iterable contains.
+---@class FilteredIterable: Iterable
+---@overload fun():FilteredIterable
+local FilteredIterable = {}
+---Returns an iterator that returns all contained objects. The order of the objects is not guaranteed.
 ---@return async fun()
-function ArrayIterable:iter() end
----Create a new ArrayIterable
----@return ArrayIterable
-function ArrayIterable:__init() end
+function FilteredIterable:iter() end
+---Create a new FilteredIterable
+---@return FilteredIterable
+function FilteredIterable:__init() end
 
 ---Iterable class that wraps another cache. Objects added to or removed from a secondary cache are also automatically added to or removed from the primary cache that it wraps.
 ---@class SecondaryCache: Iterable
@@ -2366,6 +2357,21 @@ function class.type(obj) end
 ---@return table<string, number>
 function class.profile() end
 
+--- explicitContentLevel enum
+---@class enums_explicitContentLevel
+---@field public none number | "0"
+---@field public medium number | "1"
+---@field public high number | "2"
+
+
+--- premiumTier enum
+---@class enums_premiumTier
+---@field public none number | "0"
+---@field public tier1 number | "1"
+---@field public tier2 number | "2"
+---@field public tier3 number | "3"
+
+
 --- messageType enum
 ---@class enums_messageType
 ---@field public call number | "3"
@@ -2382,114 +2388,38 @@ function class.profile() end
 ---@field public default number | "0"
 
 
---- verificationLevel enum
----@class enums_verificationLevel
----@field public low number | "1"
----@field public medium number | "2"
----@field public high number | "3"
----@field public veryHigh number | "4"
----@field public none number | "0"
-
-
---- permission enum
----@class enums_permission
----@field public connect number | "1048576"
----@field public createInstantInvite number | "1"
----@field public kickMembers number | "2"
----@field public banMembers number | "4"
----@field public administrator number | "8"
----@field public manageChannels number | "16"
----@field public manageGuild number | "32"
----@field public addReactions number | "64"
----@field public viewAuditLog number | "128"
----@field public prioritySpeaker number | "256"
----@field public readMessages number | "1024"
----@field public sendMessages number | "2048"
----@field public sendTextToSpeech number | "4096"
----@field public manageMessages number | "8192"
----@field public embedLinks number | "16384"
----@field public attachFiles number | "32768"
----@field public readMessageHistory number | "65536"
----@field public mentionEveryone number | "131072"
----@field public useExternalEmojis number | "262144"
----@field public speak number | "2097152"
----@field public muteMembers number | "4194304"
----@field public deafenMembers number | "8388608"
----@field public moveMembers number | "16777216"
----@field public useVoiceActivity number | "33554432"
----@field public changeNickname number | "67108864"
----@field public manageNicknames number | "134217728"
----@field public manageRoles number | "268435456"
----@field public manageWebhooks number | "536870912"
----@field public manageEmojis number | "1073741824"
----@field public stream number | "512"
-
-
---- notificationSetting enum
----@class enums_notificationSetting
----@field public onlyMentions number | "1"
----@field public allMessages number | "0"
+--- status enum
+---@class enums_status
+---@field public doNotDisturb string | "'dnd'"
+---@field public invisible string | "'invisible'"
+---@field public online string | "'online'"
+---@field public idle string | "'idle'"
 
 
 --- logLevel enum
 ---@class enums_logLevel
 ---@field public info number | "3"
----@field public debug number | "4"
 ---@field public warning number | "2"
 ---@field public none number | "0"
+---@field public debug number | "4"
 ---@field public error number | "1"
 
 
 --- relationshipType enum
 ---@class enums_relationshipType
 ---@field public pendingIncoming number | "3"
+---@field public pendingOutgoing number | "4"
+---@field public none number | "0"
 ---@field public friend number | "1"
 ---@field public blocked number | "2"
----@field public none number | "0"
----@field public pendingOutgoing number | "4"
-
-
---- defaultAvatar enum
----@class enums_defaultAvatar
----@field public red number | "4"
----@field public blurple number | "0"
----@field public gray number | "1"
----@field public green number | "2"
----@field public orange number | "3"
-
-
---- premiumTier enum
----@class enums_premiumTier
----@field public tier2 number | "2"
----@field public tier3 number | "3"
----@field public none number | "0"
----@field public tier1 number | "1"
 
 
 --- activityType enum
 ---@class enums_activityType
----@field public custom number | "4"
----@field public streaming number | "1"
 ---@field public listening number | "2"
----@field public default number | "0"
-
-
---- channelType enum
----@class enums_channelType
----@field public text number | "0"
----@field public voice number | "2"
----@field public category number | "4"
----@field public news number | "5"
----@field public private number | "1"
----@field public group number | "3"
-
-
---- gameType enum
----@class enums_gameType
 ---@field public custom number | "4"
----@field public streaming number | "1"
----@field public listening number | "2"
 ---@field public default number | "0"
+---@field public streaming number | "1"
 
 
 --- actionType enum
@@ -2531,25 +2461,19 @@ function class.profile() end
 ---@field public integrationDelete number | "82"
 
 
---- status enum
----@class enums_status
----@field public online string | "'online'"
----@field public idle string | "'idle'"
----@field public doNotDisturb string | "'dnd'"
----@field public invisible string | "'invisible'"
-
-
---- webhookType enum
----@class enums_webhookType
----@field public incoming number | "1"
----@field public channelFollower number | "2"
-
-
---- explicitContentLevel enum
----@class enums_explicitContentLevel
----@field public high number | "2"
+--- verificationLevel enum
+---@class enums_verificationLevel
+---@field public low number | "1"
 ---@field public none number | "0"
----@field public medium number | "1"
+---@field public medium number | "2"
+---@field public high number | "3"
+---@field public veryHigh number | "4"
+
+
+--- notificationSetting enum
+---@class enums_notificationSetting
+---@field public onlyMentions number | "1"
+---@field public allMessages number | "0"
 
 
 --- messageFlag enum
@@ -2560,23 +2484,90 @@ function class.profile() end
 ---@field public sourceMessageDeleted number | "8"
 ---@field public urgent number | "16"
 
+
+--- gameType enum
+---@class enums_gameType
+---@field public listening number | "2"
+---@field public custom number | "4"
+---@field public default number | "0"
+---@field public streaming number | "1"
+
+
+--- defaultAvatar enum
+---@class enums_defaultAvatar
+---@field public green number | "2"
+---@field public orange number | "3"
+---@field public red number | "4"
+---@field public blurple number | "0"
+---@field public gray number | "1"
+
+
+--- channelType enum
+---@class enums_channelType
+---@field public category number | "4"
+---@field public news number | "5"
+---@field public voice number | "2"
+---@field public private number | "1"
+---@field public group number | "3"
+---@field public text number | "0"
+
+
+--- permission enum
+---@class enums_permission
+---@field public manageEmojis number | "1073741824"
+---@field public createInstantInvite number | "1"
+---@field public connect number | "1048576"
+---@field public stream number | "512"
+---@field public kickMembers number | "2"
+---@field public banMembers number | "4"
+---@field public administrator number | "8"
+---@field public manageChannels number | "16"
+---@field public manageGuild number | "32"
+---@field public addReactions number | "64"
+---@field public viewAuditLog number | "128"
+---@field public prioritySpeaker number | "256"
+---@field public readMessages number | "1024"
+---@field public sendMessages number | "2048"
+---@field public sendTextToSpeech number | "4096"
+---@field public manageMessages number | "8192"
+---@field public embedLinks number | "16384"
+---@field public attachFiles number | "32768"
+---@field public readMessageHistory number | "65536"
+---@field public mentionEveryone number | "131072"
+---@field public useExternalEmojis number | "262144"
+---@field public speak number | "2097152"
+---@field public muteMembers number | "4194304"
+---@field public deafenMembers number | "8388608"
+---@field public moveMembers number | "16777216"
+---@field public useVoiceActivity number | "33554432"
+---@field public changeNickname number | "67108864"
+---@field public manageNicknames number | "134217728"
+---@field public manageRoles number | "268435456"
+---@field public manageWebhooks number | "536870912"
+
+
+--- webhookType enum
+---@class enums_webhookType
+---@field public incoming number | "1"
+---@field public channelFollower number | "2"
+
 ---@class enums
+---@field public explicitContentLevel enums_explicitContentLevel
+---@field public premiumTier enums_premiumTier
 ---@field public messageType enums_messageType
----@field public verificationLevel enums_verificationLevel
----@field public permission enums_permission
----@field public notificationSetting enums_notificationSetting
+---@field public status enums_status
 ---@field public logLevel enums_logLevel
 ---@field public relationshipType enums_relationshipType
----@field public defaultAvatar enums_defaultAvatar
----@field public premiumTier enums_premiumTier
 ---@field public activityType enums_activityType
----@field public channelType enums_channelType
----@field public gameType enums_gameType
 ---@field public actionType enums_actionType
----@field public status enums_status
----@field public webhookType enums_webhookType
----@field public explicitContentLevel enums_explicitContentLevel
+---@field public verificationLevel enums_verificationLevel
+---@field public notificationSetting enums_notificationSetting
 ---@field public messageFlag enums_messageFlag
+---@field public gameType enums_gameType
+---@field public defaultAvatar enums_defaultAvatar
+---@field public channelType enums_channelType
+---@field public permission enums_permission
+---@field public webhookType enums_webhookType
 --- The Discord API uses numbers to represent certain data types.
 --- For convenience, these are enumerated in Discord as special read-only tables, found in the main Discordia module.
 --- All available enumerations are listed at the end of this page.
@@ -2845,14 +2836,14 @@ function mathExt.round(n, digits) end
 
 
 ---@class package
+---@field public name string | "'SinisterRectus/discordia'"
+---@field public author string | "'Sinister Rectus'"
 ---@field public license string | "'MIT'"
 ---@field public dependencies string[]
 ---@field public homepage string | "'https://github.com/SinisterRectus/Discordia'"
----@field public files string[]
 ---@field public version string | "'2.9.2'"
+---@field public files string[]
 ---@field public tags string[]
----@field public name string | "'SinisterRectus/discordia'"
----@field public author string | "'Sinister Rectus'"
 
 
 --- To write a Discordia application, the library's main module must be required. If it's in a deps or libs folder, simply require it by name.
@@ -2923,3 +2914,5 @@ local discordia = {
   package = package,
   storage = {}
 }
+
+return discordia
