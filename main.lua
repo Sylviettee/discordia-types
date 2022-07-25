@@ -404,9 +404,7 @@ end
 ---
 
 -- Fill out mixin
-local discordia = require('discordia')
-
-local enums = discordia.enums
+local enums = require('deps.discordia.libs.enums')
 
 local enumDescs = {}
 local fields = {}
@@ -431,7 +429,7 @@ for i, v in pairs(enums) do
 end
 
 -- Fill out package
-local package = discordia.package
+local package = require('deps.discordia.package')
 local desc = '---@class package\n'
 
 for i, v in pairs(package) do
