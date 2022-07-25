@@ -330,7 +330,7 @@ for _, class in pairs(docs) do
    -- Init method
    local func, inParen = descFunc({
       desc = f('Create a new %s', class.name),
-      parameters = class.parameters,
+      parameters =  class.name == 'Client' and { {'options', 'ClientOptions', true } } or class.parameters,
       returns = {class.name},
       tags = class.methodTags
    })
