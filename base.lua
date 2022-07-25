@@ -103,6 +103,23 @@
 ---| "'warning'"                # Emitted when something went wrong, but your code will probably continue operating normally.
 ---| "'error'"                  # Emitted when something went wrong and your code may not continue operating normally.
 
+---When initializing a client, a table of options can be passed to the constructor. A variety of sanity checks are performed on client initialization and while authenticating. Invalid options will result in an error being thrown while unusual options may log a client warning.
+---@class ClientOptions
+---@field public routeDelay boolean Minimum time in milliseconds to wait between HTTP requests per-route
+---@field public maxRetries integer The maximum number of retries to attempt after an HTTP request fails
+---@field public shardCount integer The total number of shards the application is using (0 signals to use the recommended count)
+---@field public firstShard integer The ID of the first shard to run on the client (0 is the minimum)
+---@field public lastShard integer The ID of the last shard to run on the client (-1 signals to use `shardCount - 1`)
+---@field public largeThresold integer Limit to how many members are initially fetched per-guild on start-up
+---@field public cacheAllMembers boolean Whether to cache all members (If false, offline members may not be cached)
+---@field public autoReconnect boolean Whether to attempt to reconnect after an unexpected gateway disconnection
+---@field public compress boolean Whether to allow for compressed gateway payloads
+---@field public bitrate integer The default bitrate to use for voice connections, from 8000 to 128000
+---@field public logFile string The file to use for logging
+---@field public logLevel integer The level to use for logging (see [Enumerations](https://github.com/SinisterRectus/Discordia/wiki/Enumerations))
+---@field public dateTime string The date and time format to use logging
+---@field public syncGuilds boolean Whether to automatically sync all guilds on start up (user-accounts only)
+
 --- Send a debug level(4) message
 ---
 --- Used for all HTTP requests, all gateway events, gateway debugging information
