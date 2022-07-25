@@ -330,7 +330,7 @@ for _, class in pairs(docs) do
    -- Init method
    local func, inParen = descFunc({
       desc = f('Create a new %s', class.name),
-      parameters = class.name == 'Client' and { {'options', 'ClientOptions', true } } or class.parameters,
+      parameters = class.parameters,
       returns = {class.name},
       tags = class.methodTags
    })
@@ -385,7 +385,7 @@ local function whatIs(this)
                end
 
                if whatIs(i) ~= keyType and keyType ~= 'any' then
-               keyType = 'any'
+                  keyType = 'any'
                end
 
                if whatIs(v) ~= valueType and valueType ~= 'any' then
