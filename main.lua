@@ -304,8 +304,10 @@ for _, class in pairs(docs) do
 
    -- Init overload
 
+   local initParams = class.name == 'Client' and { {'options', 'ClientOptions', true } } or class.parameters
+
    writing = writing .. f('---@overload %s\n', descInlineFunc({
-      parameters = class.parameters,
+      parameters = initParams,
       returns = {class.name},
    }))
 
@@ -330,7 +332,7 @@ for _, class in pairs(docs) do
    -- Init method
    local func, inParen = descFunc({
       desc = f('Create a new %s', class.name),
-      parameters =  class.name == 'Client' and { {'options', 'ClientOptions', true } } or class.parameters,
+      parameters = initParams,
       returns = {class.name},
       tags = class.methodTags
    })
