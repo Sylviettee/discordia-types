@@ -103,6 +103,38 @@
 ---| "'warning'"                # Emitted when something went wrong, but your code will probably continue operating normally.
 ---| "'error'"                  # Emitted when something went wrong and your code may not continue operating normally.
 
+---@alias permissionStrings string
+---| "'viewAuditLog'"
+---| "'prioritySpeaker'"
+---| "'readMessages'"
+---| "'sendMessages'"
+---| "'sendTextToSpeech'"
+---| "'manageMessages'"
+---| "'embedLinks'"
+---| "'attachFiles'"
+---| "'readMessageHistory'"
+---| "'mentionEveryone'"
+---| "'useExternalEmojis'"
+---| "'speak number'"
+---| "'muteMembers'"
+---| "'deafenMembers'"
+---| "'moveMembers'"
+---| "'useVoiceActivity'"
+---| "'changeNickname'"
+---| "'manageNicknames'"
+---| "'manageRoles'"
+---| "'manageWebhooks'"
+---| "'manageEmojis'"
+---| "'connect'"
+---| "'kickMembers'"
+---| "'createInstantInvite'"
+---| "'stream'"
+---| "'banMembers'"
+---| "'administrator'"
+---| "'manageChannels'" 
+---| "'manageGuild'"
+---| "'addReactions'" 
+
 --- When initializing a client, a table of options can be passed to the constructor. A variety of sanity checks are performed on client initialization and while authenticating. Invalid options will result in an error being thrown while unusual options may log a client warning.
 ---@class ClientOptions
 ---@field public routeDelay boolean Minimum time in milliseconds to wait between HTTP requests per-route

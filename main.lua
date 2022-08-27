@@ -203,16 +203,14 @@ local function convert(tp)
    else
       if tp == 'Base64-Resolveable' or tp == 'Base64-Resolvable' then
          return 'string'
-      elseif tp == 'Permission-Resolvables' then
-         return 'number[]'
+      elseif tp == 'Permission-Resolvables' or tp == 'Permissions-Resolvables' then
+         return 'Permissions[] | number[] | permissionStrings[]'
       elseif tp == 'Color-Resolvable' then
          return 'number | Color'
       elseif tp == 'Emoji-Resolvable' then
          return 'Emoji | Reaction | string'
       elseif tp == 'Permissions-Resolvable' then
-         return 'Permissions | number'
-      elseif tp == 'Permissions-Resolvables' then
-         return 'Permissions[] | number[]'
+         return 'Permissions | number | permissionStrings'
       elseif tp == 'Message-Flag-Resolvable' then
          return 'number'
       end
