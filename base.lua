@@ -115,7 +115,7 @@
 ---| "'readMessageHistory'"
 ---| "'mentionEveryone'"
 ---| "'useExternalEmojis'"
----| "'speak number'"
+---| "'speak'"
 ---| "'muteMembers'"
 ---| "'deafenMembers'"
 ---| "'moveMembers'"
